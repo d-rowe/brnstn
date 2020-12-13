@@ -95,9 +95,7 @@ export default class Interval {
   // TODO: support n senority chars (ex. ddd)
   sonority(): string {
     const isPerfectType = PERFECT_INTERVALS.has(this.simpleDiatonic() + 1);
-    const offsetMap = isPerfectType
-      ? PERFECT_OFFSETS
-      : MAJOR_OFFSETS;
+    const offsetMap = isPerfectType ? PERFECT_OFFSETS : MAJOR_OFFSETS;
 
     const sonorityMatch = offsetMap.get(this.sonorityOffset());
     if (sonorityMatch) {
