@@ -1,19 +1,27 @@
-const NAMES = 'CDEFGAB';
-const STEPS = [0, 2, 4, 5, 7, 9, 11];
+import { PitchCoordinate, SCALE_SEMITONES } from './constants';
+
 const ACCIDENTAL_CHAR_OFFSETS = { b: -1, '#': 1, x: 2 };
-const OCTAVE_STEP_COUNT = 12;
+const DEFAULT_COORD: PitchCoordinate = [0, 0];
+const PITCH_NAMES = 'CDEFGAB';
+
+interface Props {
+  coord?: PitchCoordinate;
+  spn?: string;
+}
 
 export default class Pitch {
-  private _diatonic: number;
-  private _midi: number;
+  private _coord: PitchCoordinate;
 
-  constructor(diatonic?: number, midi?: number) {
-    this._diatonic = diatonic || 0;
-    this._midi = midi || 0;
+  constructor({ coord, spn }: Props) {
+    if (!coord && !spn) {
+      throw new Error('Pitch needs either coord or spn');
+    }
+
+    this._coord = spn ? this._getCoordFromSpn(spn) : coord || DEFAULT_COORD;
   }
 
-  fromSpn(spn: string): Pitch {
-    const parsed = /([a-gA-G])([b|#|x]*)?([0-9])?/.exec(spn);
+  private _getCoordFromSpn(spn: string): PitchCoordinate {
+    const parsed = /([a-gA-G])([b|#|x]*)?([0-9]*)?/.exec(spn);
 
     if (!parsed) {
       throw new Error(`Cannot parse invalid scientific pitch notation: ${spn}`);
@@ -22,20 +30,20 @@ export default class Pitch {
     const [, name, accidental = '', octave = '4'] = parsed;
     const octaveNum = Number(octave);
     const simpleDiatonic = this._getSimpleDiatonicFromName(name);
-    const octaveOffset = octaveNum * OCTAVE_STEP_COUNT;
+    const octaveOffset = octaveNum * 12;
 
-    this._diatonic = simpleDiatonic + octaveNum * 7;
-    this._midi =
-      STEPS[simpleDiatonic] +
+    const diatonic = simpleDiatonic + octaveNum * 7;
+    const semitones =
+      SCALE_SEMITONES[simpleDiatonic] +
       octaveOffset +
       this._getAccidentalOffset(accidental);
 
-    return this;
+    return [diatonic, semitones];
   }
 
   private _getSimpleDiatonicFromName(name: string): number {
-    for (let i = 0; i < NAMES.length; i++) {
-      const curName = NAMES[i];
+    for (let i = 0; i < PITCH_NAMES.length; i++) {
+      const curName = PITCH_NAMES[i];
 
       if (curName === name) {
         return i;
@@ -58,14 +66,18 @@ export default class Pitch {
   }
 
   name() {
-    return NAMES[this._diatonic % NAMES.length];
+    return PITCH_NAMES[this.diatonic() % PITCH_NAMES.length];
   }
 
-  midi(): number {
-    return this._midi;
+  coord() {
+    return this._coord;
   }
 
   diatonic(): number {
-    return this._diatonic;
+    return this._coord[0];
+  }
+
+  semitones(): number {
+    return this._coord[1];
   }
 }
