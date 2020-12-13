@@ -42,10 +42,12 @@ export default class Pitch {
   }
 
   private _getSimpleDiatonicFromName(name: string): number {
+    const upperName = name.toUpperCase();
+
     for (let i = 0; i < PITCH_NAMES.length; i++) {
       const curName = PITCH_NAMES[i];
 
-      if (curName === name) {
+      if (curName === upperName) {
         return i;
       }
     }

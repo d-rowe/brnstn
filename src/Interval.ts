@@ -9,16 +9,16 @@ interface Props {
   };
 }
 
-const PERFECT_INTERVALS = new Set([1, 4, 5]);
+const PERFECT_INTERVALS = new Set<number>([1, 4, 5]);
 const SONORITIES = { d: 'd', m: 'm', M: 'M', P: 'P', A: 'A' };
 
-const PERFECT_OFFSETS = new Map([
+const PERFECT_OFFSETS = new Map<number, string>([
   [-1, SONORITIES.d],
   [0, SONORITIES.P],
   [1, SONORITIES.A],
 ]);
 
-const MAJOR_OFFSETS = new Map([
+const MAJOR_OFFSETS = new Map<number, string>([
   [-2, SONORITIES.d],
   [-1, SONORITIES.m],
   [0, SONORITIES.M],
@@ -70,42 +70,37 @@ export default class Interval {
   }
 
   simpleDiatonic(): number {
-    const diatonic = this.diatonic();
-    const simple = Math.abs(diatonic % 12);
-
-    if (simple >= 0) {
-      return simple;
-    }
-
-    return 9 - simple;
+    return this.diatonic() % 7;
   }
 
   simpleSemitones(): number {
-    const semitones = this.semitones();
-    const simple = Math.abs(semitones % 12);
-
-    if (semitones >= 0) {
-      return simple;
-    }
-
-    // Invert if descending
-    return 12 - simple;
+    return this.semitones() % 12;
   }
 
-  // TODO: support n senority chars (ex. ddd)
-  sonority(): string {
+  quality(): string {
     const isPerfectType = PERFECT_INTERVALS.has(this.simpleDiatonic() + 1);
     const offsetMap = isPerfectType ? PERFECT_OFFSETS : MAJOR_OFFSETS;
+    const offset = this.qualityOffset();
+    const absOffset = Math.abs(offset);
+    const match = offsetMap.get(offset);
 
-    const sonorityMatch = offsetMap.get(this.sonorityOffset());
-    if (sonorityMatch) {
-      return sonorityMatch;
+    if (absOffset < 2 && match) {
+      return match;
     }
 
-    return '';
+    const simpleMatch = offsetMap.get(absOffset / offset);
+    if (isPerfectType && simpleMatch) {
+      return simpleMatch.repeat(absOffset);
+    }
+
+    if (offset >= 0) {
+      return SONORITIES.A.repeat(absOffset);
+    }
+
+    return SONORITIES.d.repeat(absOffset - 1);
   }
 
-  sonorityOffset(): number {
+  qualityOffset(): number {
     const octaveSemitoneOffset = this.octaves() * 12;
     const referenceSemitones =
       SCALE_SEMITONES[this.simpleDiatonic()] + octaveSemitoneOffset;
