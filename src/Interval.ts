@@ -9,6 +9,22 @@ interface Props {
   };
 }
 
+const PERFECT_INTERVALS = new Set([1, 4, 5]);
+const SONORITIES = { d: 'd', m: 'm', M: 'M', P: 'P', A: 'A' };
+
+const PERFECT_OFFSETS = new Map([
+  [-1, SONORITIES.d],
+  [0, SONORITIES.P],
+  [1, SONORITIES.A],
+]);
+
+const MAJOR_OFFSETS = new Map([
+  [-2, SONORITIES.d],
+  [-1, SONORITIES.m],
+  [0, SONORITIES.M],
+  [1, SONORITIES.A],
+]);
+
 export default class Interval {
   _coord: PitchCoordinate;
 
@@ -29,38 +45,72 @@ export default class Interval {
     return [endDiatonic - startDiatonic, endSemitones - startSemitones];
   }
 
-  coord() {
+  coord(): PitchCoordinate {
     return this._coord;
   }
 
-  diatonic() {
+  diatonic(): number {
     return this._coord[0];
   }
 
-  octaves() {
+  octaves(): number {
     return Math.floor(this.diatonic() / 7);
   }
 
-  referenceOffset() {
+  semitones(): number {
+    return this._coord[1];
+  }
+
+  simple(): Interval {
+    return new Interval({ coord: this.simpleCoord() });
+  }
+
+  simpleCoord(): PitchCoordinate {
+    return [this.simpleDiatonic(), this.simpleSemitones()];
+  }
+
+  simpleDiatonic(): number {
+    const diatonic = this.diatonic();
+    const simple = Math.abs(diatonic % 12);
+
+    if (simple >= 0) {
+      return simple;
+    }
+
+    return 9 - simple;
+  }
+
+  simpleSemitones(): number {
+    const semitones = this.semitones();
+    const simple = Math.abs(semitones % 12);
+
+    if (semitones >= 0) {
+      return simple;
+    }
+
+    // Invert if descending
+    return 12 - simple;
+  }
+
+  // TODO: support n senority chars (ex. ddd)
+  sonority(): string {
+    const isPerfectType = PERFECT_INTERVALS.has(this.simpleDiatonic() + 1);
+    const offsetMap = isPerfectType
+      ? PERFECT_OFFSETS
+      : MAJOR_OFFSETS;
+
+    const sonorityMatch = offsetMap.get(this.sonorityOffset());
+    if (sonorityMatch) {
+      return sonorityMatch;
+    }
+
+    return '';
+  }
+
+  sonorityOffset(): number {
     const octaveSemitoneOffset = this.octaves() * 12;
     const referenceSemitones =
       SCALE_SEMITONES[this.simpleDiatonic()] + octaveSemitoneOffset;
     return this.semitones() - referenceSemitones;
-  }
-
-  semitones() {
-    return this._coord[1];
-  }
-
-  simpleCoord() {
-    return [this.simpleDiatonic(), this.simpleSemitones()];
-  }
-
-  simpleDiatonic() {
-    return this.diatonic() % 7;
-  }
-
-  simpleSemitones() {
-    return this.semitones() % 12;
   }
 }
