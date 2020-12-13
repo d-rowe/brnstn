@@ -1,10 +1,5 @@
 import Pitch from './Pitch';
-import {
-  PERFECT_INTERVALS,
-  PitchCoordinate,
-  SCALE_SEMITONES,
-  SONORITIES,
-} from './constants';
+import { PitchCoordinate, SCALE_SEMITONES } from './constants';
 
 interface Props {
   coord?: PitchCoordinate;
@@ -40,14 +35,6 @@ export default class Interval {
 
   diatonic() {
     return this._coord[0];
-  }
-
-  name() {
-    if (PERFECT_INTERVALS.has(this.simpleDiatonic())) {
-      return `${SONORITIES.P}${this.diatonic()}`;
-    }
-
-    return;
   }
 
   octaves() {
