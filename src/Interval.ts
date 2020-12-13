@@ -1,5 +1,5 @@
 import Pitch from './Pitch';
-import { PitchCoordinate, SCALE_SEMITONES } from './constants';
+import { PitchCoordinate, SCALE_SEMITONES } from './Constants';
 
 interface Props {
   coord?: PitchCoordinate;
@@ -14,7 +14,7 @@ export default class Interval {
 
   constructor({ coord, pitchRange }: Props) {
     if (!coord && !pitchRange) {
-      throw new Error('Interval must have either coord or pitchRange');
+      throw new Error('Interval must have either coord or pitch range');
     }
 
     this._coord = pitchRange

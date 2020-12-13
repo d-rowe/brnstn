@@ -1,4 +1,4 @@
-import { PitchCoordinate, SCALE_SEMITONES } from './constants';
+import { PitchCoordinate, SCALE_SEMITONES } from './Constants';
 
 const ACCIDENTAL_CHAR_OFFSETS = { b: -1, '#': 1, x: 2 };
 const DEFAULT_COORD: PitchCoordinate = [0, 0];

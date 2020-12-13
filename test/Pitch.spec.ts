@@ -1,4 +1,4 @@
-import { PitchCoordinate } from '../src/constants';
+import { PitchCoordinate } from '../src/Constants';
 import Pitch from '../src/Pitch';
 
 describe('Pitch', () => {
