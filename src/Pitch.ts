@@ -21,7 +21,7 @@ export default class Pitch {
   }
 
   private _getCoordFromSpn(spn: string): PitchCoordinate {
-    const parsed = /([a-gA-G])([b|#|x]*)?([0-9]*)?/.exec(spn);
+    const parsed = /([a-gA-G])([b|#|x]*)?(-?[0-9]*)?/.exec(spn);
 
     if (!parsed) {
       throw new Error(`Cannot parse invalid scientific pitch notation: ${spn}`);
@@ -76,10 +76,10 @@ export default class Pitch {
   }
 
   diatonic(): number {
-    return this._coord[0];
+    return this.coord()[0];
   }
 
   semitones(): number {
-    return this._coord[1];
+    return this.coord()[1];
   }
 }

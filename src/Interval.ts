@@ -1,3 +1,4 @@
+import Helpers from './Helpers';
 import Pitch from './Pitch';
 import { PitchCoordinate, SCALE_SEMITONES } from './Constants';
 
@@ -26,7 +27,7 @@ const MAJOR_OFFSETS = new Map<number, string>([
 ]);
 
 export default class Interval {
-  _coord: PitchCoordinate;
+  private _coord: PitchCoordinate;
 
   constructor({ coord, pitchRange }: Props) {
     if (!coord && !pitchRange) {
@@ -45,20 +46,28 @@ export default class Interval {
     return [endDiatonic - startDiatonic, endSemitones - startSemitones];
   }
 
+  absCoord(): PitchCoordinate {
+    return Helpers.absCoord(this.coord());
+  }
+
   coord(): PitchCoordinate {
     return this._coord;
   }
 
   diatonic(): number {
-    return this._coord[0];
+    return this.coord()[0];
+  }
+
+  direction(): number {
+    return this.diatonic() >= 0 ? 1 : -1;
   }
 
   octaves(): number {
-    return Math.floor(this.diatonic() / 7);
+    return Helpers.octave(this.diatonic());
   }
 
   semitones(): number {
-    return this._coord[1];
+    return this.coord()[1];
   }
 
   simple(): Interval {
@@ -70,11 +79,11 @@ export default class Interval {
   }
 
   simpleDiatonic(): number {
-    return this.diatonic() % 7;
+    return Helpers.simplifyDiatonic(this.diatonic());
   }
 
   simpleSemitones(): number {
-    return this.semitones() % 12;
+    return Helpers.simplifySemitones(this.semitones());
   }
 
   quality(): string {
@@ -101,9 +110,11 @@ export default class Interval {
   }
 
   qualityOffset(): number {
-    const octaveSemitoneOffset = this.octaves() * 12;
-    const referenceSemitones =
-      SCALE_SEMITONES[this.simpleDiatonic()] + octaveSemitoneOffset;
-    return this.semitones() - referenceSemitones;
+    const [diatonic, semitones] = this.absCoord();
+    const diatonicSemitones =
+      SCALE_SEMITONES[Helpers.simplifyDiatonic(diatonic)];
+    const octaveSemitones = Helpers.octave(diatonic) * 12;
+    const referenceSemitones = diatonicSemitones + octaveSemitones;
+    return semitones - referenceSemitones;
   }
 }

@@ -13,6 +13,18 @@ describe('Interval', () => {
     });
   });
 
+  describe('#absCoord', () => {
+    it('should leave ascending coordinates unchanged', () => {
+      const interval = new Interval({ coord: [12, 36] });
+      expect(interval.absCoord()).toEqual([12, 36]);
+    });
+
+    it('should return ascending coordinate for descending coordinate', () => {
+      const interval = new Interval({ coord: [-12, -36] });
+      expect(interval.absCoord()).toEqual([12, 36]);
+    });
+  });
+
   describe('#qualityOffset', () => {
     it('should get correct offset', () => {
       expectQualityOffsets([
@@ -21,6 +33,7 @@ describe('Interval', () => {
         ['C4', 'Dbb4', -2],
         ['Bb3', 'D#4', 1],
         ['D4', 'Fbb4', -3],
+        ['F4', 'D4', -1],
       ]);
     });
   });
