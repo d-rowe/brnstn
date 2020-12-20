@@ -87,7 +87,8 @@ export default class Interval {
   }
 
   quality(): string {
-    const isPerfectType = PERFECT_INTERVALS.has(this.simpleDiatonic() + 1);
+    const absSimpleDiatonic = Math.abs(this.simpleDiatonic());
+    const isPerfectType = PERFECT_INTERVALS.has(absSimpleDiatonic + 1);
     const offsetMap = isPerfectType ? PERFECT_OFFSETS : MAJOR_OFFSETS;
     const offset = this.qualityOffset();
     const absOffset = Math.abs(offset);
