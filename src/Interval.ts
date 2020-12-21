@@ -3,19 +3,19 @@ import Pitch from './Pitch';
 import { PitchCoordinate, SCALE_SEMITONES } from './Constants';
 
 const PERFECT_INTERVALS = new Set<number>([1, 4, 5]);
-const SONORITIES = { d: 'd', m: 'm', M: 'M', P: 'P', A: 'A' };
+const QUALITIES = { d: 'd', m: 'm', M: 'M', P: 'P', A: 'A' };
 
 const PERFECT_OFFSETS = new Map<number, string>([
-  [-1, SONORITIES.d],
-  [0, SONORITIES.P],
-  [1, SONORITIES.A],
+  [-1, QUALITIES.d],
+  [0, QUALITIES.P],
+  [1, QUALITIES.A],
 ]);
 
 const MAJOR_OFFSETS = new Map<number, string>([
-  [-2, SONORITIES.d],
-  [-1, SONORITIES.m],
-  [0, SONORITIES.M],
-  [1, SONORITIES.A],
+  [-2, QUALITIES.d],
+  [-1, QUALITIES.m],
+  [0, QUALITIES.M],
+  [1, QUALITIES.A],
 ]);
 
 interface Props {
@@ -118,10 +118,10 @@ export default class Interval {
     }
 
     if (offset >= 0) {
-      return SONORITIES.A.repeat(absOffset);
+      return QUALITIES.A.repeat(absOffset);
     }
 
-    return SONORITIES.d.repeat(absOffset - 1);
+    return QUALITIES.d.repeat(absOffset - 1);
   }
 
   /**
