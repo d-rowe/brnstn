@@ -2,14 +2,6 @@ import Helpers from './Helpers';
 import Pitch from './Pitch';
 import { PitchCoordinate, SCALE_SEMITONES } from './Constants';
 
-interface Props {
-  coord?: PitchCoordinate;
-  pitchRange?: {
-    start: Pitch;
-    end: Pitch;
-  };
-}
-
 const PERFECT_INTERVALS = new Set<number>([1, 4, 5]);
 const SONORITIES = { d: 'd', m: 'm', M: 'M', P: 'P', A: 'A' };
 
@@ -25,6 +17,14 @@ const MAJOR_OFFSETS = new Map<number, string>([
   [0, SONORITIES.M],
   [1, SONORITIES.A],
 ]);
+
+interface Props {
+  coord?: PitchCoordinate;
+  pitchRange?: {
+    start: Pitch;
+    end: Pitch;
+  };
+}
 
 export default class Interval {
   private _coord: PitchCoordinate;
@@ -58,8 +58,19 @@ export default class Interval {
     return this.coord()[0];
   }
 
+  /**
+   * 1 for ascending, -1 for descending
+   */
   direction(): number {
     return this.diatonic() >= 0 ? 1 : -1;
+  }
+
+  /**
+   * Name in shortened form (ex. P5, m3)
+   */
+  name(): string {
+    const absDiatonic = Math.abs(this.diatonic());
+    return `${this.quality()}${absDiatonic + 1}`;
   }
 
   octaves(): number {
@@ -86,6 +97,9 @@ export default class Interval {
     return Helpers.simplifySemitones(this.semitones());
   }
 
+  /**
+   * Quality in shortend notation (ex. P for Perfect, m for minor)
+   */
   quality(): string {
     const absSimpleDiatonic = Math.abs(this.simpleDiatonic());
     const isPerfectType = PERFECT_INTERVALS.has(absSimpleDiatonic + 1);
@@ -110,6 +124,13 @@ export default class Interval {
     return SONORITIES.d.repeat(absOffset - 1);
   }
 
+  /**
+   * Distance in semitones from reference unmodified
+   * Similar to a pitch's concept of accidentalOffset
+   *
+   * Ex. B3 -> D4 returns -1 as it's 1 semitone
+   *     below a major 3rd
+   */
   qualityOffset(): number {
     const [diatonic, semitones] = this.absCoord();
     const diatonicSemitones =

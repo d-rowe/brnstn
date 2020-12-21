@@ -25,6 +25,16 @@ describe('Interval', () => {
     });
   });
 
+  describe('#name', () => {
+    it('should calculate correct names', () => {
+      expectNames([
+        ['C4', 'G4', 'P5'],
+        ['G4', 'C4', 'P5'],
+        ['Bb4', 'D6', 'M10'],
+      ]);
+    });
+  });
+
   describe('#qualityOffset', () => {
     it('should get correct offset', () => {
       expectQualityOffsets([
@@ -73,6 +83,12 @@ function getIntervalFromSpnRange(startSpn: string, endSpn: string): Interval {
 function expectCoords(expectations: [string, string, PitchCoordinate][]): void {
   expectations.forEach(([startSpn, endSpn, coord]) => {
     expect(getIntervalFromSpnRange(startSpn, endSpn).coord()).toEqual(coord);
+  });
+}
+
+function expectNames(expectations: [string, string, string][]): void {
+  expectations.forEach(([startSpn, endSpn, name]) => {
+    expect(getIntervalFromSpnRange(startSpn, endSpn).name()).toBe(name);
   });
 }
 
