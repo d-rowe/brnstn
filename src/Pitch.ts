@@ -40,7 +40,7 @@ export default class Pitch {
     const diatonic = simpleDiatonic + octaveNum * DIATONICS_PER_OCTAVE;
     const simpleSemitones = SCALE_SEMITONES[simpleDiatonic];
     const octaveOffset = octaveNum * SEMITONES_PER_OCTAVE;
-    const accidentalOffset = this._getAccidentalOffset(accidental);
+    const accidentalOffset = this._getOffsetFromAccidental(accidental);
     const semitones = simpleSemitones + octaveOffset + accidentalOffset;
 
     return [diatonic, semitones];
@@ -60,7 +60,7 @@ export default class Pitch {
     return 0;
   }
 
-  private _getAccidentalOffset(accidental: string = ''): number {
+  private _getOffsetFromAccidental(accidental: string = ''): number {
     let totalOffset = 0;
     for (let i = 0; i < accidental.length; i++) {
       const curChar = accidental[i];
@@ -72,12 +72,36 @@ export default class Pitch {
     return totalOffset;
   }
 
+  accidental(): string {
+    let offset = this.accidentalOffset();
+    let accumilator = '';
+
+    while (offset !== 0) {
+      if (offset < 0) {
+        accumilator += 'b';
+        offset += 1;
+        continue;
+      }
+
+      if (offset === 1) {
+        accumilator += '#';
+        offset -= 1;
+        continue;
+      }
+
+      if (offset > 1) {
+        accumilator += 'x';
+        offset -= 2;
+        continue;
+      }
+    }
+
+    return accumilator;
+  }
+
   accidentalOffset(): number {
     const diatonic = this.diatonic();
-    const simpleReferenceSemitones = Helpers.diatonicToSemitones(diatonic);
-    const octave = this.octave();
-    const octaveSemitones = octave * SEMITONES_PER_OCTAVE;
-    const referenceSemitones = simpleReferenceSemitones + octaveSemitones;
+    const referenceSemitones = Helpers.diatonicToSemitones(diatonic);
 
     return this.semitones() - referenceSemitones;
   }
