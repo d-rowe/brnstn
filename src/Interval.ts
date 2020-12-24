@@ -137,11 +137,12 @@ export default class Interval {
    */
   qualityOffset(): number {
     const [diatonic, semitones] = this.absCoord();
-    const diatonicSemitones =
-      SCALE_SEMITONES[Helpers.simplifyDiatonic(diatonic)];
+    const simpleDiatonic = Helpers.simplifyDiatonic(diatonic);
+    const diatonicSemitones = SCALE_SEMITONES[simpleDiatonic];
     const octave = Helpers.getOctave(diatonic);
     const octaveSemitones = octave * SEMITONES_PER_OCTAVE;
     const referenceSemitones = diatonicSemitones + octaveSemitones;
+
     return semitones - referenceSemitones;
   }
 }

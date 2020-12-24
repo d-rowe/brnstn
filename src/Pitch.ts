@@ -4,10 +4,12 @@ import {
   SCALE_SEMITONES,
   SEMITONES_PER_OCTAVE,
 } from './Constants';
+import Helpers from './Helpers';
 
 const ACCIDENTAL_CHAR_OFFSETS = { b: -1, '#': 1, x: 2 };
 const DEFAULT_COORD: PitchCoordinate = [0, 0];
 const PITCH_NAMES = 'CDEFGAB';
+const spnRegEx = /([a-gA-G])([b|#|x]*)?(-?[0-9]*)?/;
 
 interface Props {
   coord?: PitchCoordinate;
@@ -26,27 +28,25 @@ export default class Pitch {
   }
 
   private _getCoordFromSpn(spn: string): PitchCoordinate {
-    const parsed = /([a-gA-G])([b|#|x]*)?(-?[0-9]*)?/.exec(spn);
+    const parsed = spnRegEx.exec(spn);
 
     if (!parsed) {
       throw new Error(`Cannot parse invalid scientific pitch notation: ${spn}`);
     }
 
-    const [, name, accidental = '', octave = '4'] = parsed;
+    const [, letter, accidental = '', octave = '4'] = parsed;
     const octaveNum = Number(octave);
-    const simpleDiatonic = this._getSimpleDiatonicFromName(name);
-    const octaveOffset = octaveNum * SEMITONES_PER_OCTAVE;
-
+    const simpleDiatonic = this._getSimpleDiatonicFromLetter(letter);
     const diatonic = simpleDiatonic + octaveNum * DIATONICS_PER_OCTAVE;
-    const semitones =
-      SCALE_SEMITONES[simpleDiatonic] +
-      octaveOffset +
-      this._getAccidentalOffset(accidental);
+    const simpleSemitones = SCALE_SEMITONES[simpleDiatonic];
+    const octaveOffset = octaveNum * SEMITONES_PER_OCTAVE;
+    const accidentalOffset = this._getAccidentalOffset(accidental);
+    const semitones = simpleSemitones + octaveOffset + accidentalOffset;
 
     return [diatonic, semitones];
   }
 
-  private _getSimpleDiatonicFromName(name: string): number {
+  private _getSimpleDiatonicFromLetter(name: string): number {
     const upperName = name.toUpperCase();
 
     for (let i = 0; i < PITCH_NAMES.length; i++) {
@@ -72,8 +72,14 @@ export default class Pitch {
     return totalOffset;
   }
 
-  name() {
-    return PITCH_NAMES[this.diatonic() % PITCH_NAMES.length];
+  accidentalOffset(): number {
+    const diatonic = this.diatonic();
+    const simpleReferenceSemitones = Helpers.diatonicToSemitones(diatonic);
+    const octave = this.octave();
+    const octaveSemitones = octave * SEMITONES_PER_OCTAVE;
+    const referenceSemitones = simpleReferenceSemitones + octaveSemitones;
+
+    return this.semitones() - referenceSemitones;
   }
 
   coord() {
@@ -84,7 +90,23 @@ export default class Pitch {
     return this.coord()[0];
   }
 
+  letter() {
+    return PITCH_NAMES[this.simpleDiatonic()];
+  }
+
+  octave() {
+    return Helpers.getOctave(this.diatonic());
+  }
+
   semitones(): number {
     return this.coord()[1];
+  }
+
+  simpleDiatonic(): number {
+    return Helpers.simplifyDiatonic(this.diatonic());
+  }
+
+  spn() {
+    return `${this.letter()}${this.octave}`;
   }
 }
