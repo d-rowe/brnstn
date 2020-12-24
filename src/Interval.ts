@@ -1,6 +1,10 @@
 import Helpers from './Helpers';
 import Pitch from './Pitch';
-import { PitchCoordinate, SCALE_SEMITONES } from './Constants';
+import {
+  PitchCoordinate,
+  SCALE_SEMITONES,
+  SEMITONES_PER_OCTAVE,
+} from './Constants';
 
 const PERFECT_INTERVALS = new Set<number>([1, 4, 5]);
 const QUALITIES = { d: 'd', m: 'm', M: 'M', P: 'P', A: 'A' };
@@ -74,7 +78,7 @@ export default class Interval {
   }
 
   octaves(): number {
-    return Helpers.octave(this.diatonic());
+    return Helpers.getOctave(this.diatonic());
   }
 
   semitones(): number {
@@ -135,7 +139,8 @@ export default class Interval {
     const [diatonic, semitones] = this.absCoord();
     const diatonicSemitones =
       SCALE_SEMITONES[Helpers.simplifyDiatonic(diatonic)];
-    const octaveSemitones = Helpers.octave(diatonic) * 12;
+    const octave = Helpers.getOctave(diatonic);
+    const octaveSemitones = octave * SEMITONES_PER_OCTAVE;
     const referenceSemitones = diatonicSemitones + octaveSemitones;
     return semitones - referenceSemitones;
   }

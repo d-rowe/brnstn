@@ -1,4 +1,8 @@
-import { PitchCoordinate } from './Constants';
+import {
+  DIATONICS_PER_OCTAVE,
+  PitchCoordinate,
+  SEMITONES_PER_OCTAVE,
+} from './Constants';
 
 function absCoord(coord: PitchCoordinate): PitchCoordinate {
   const [diatonic, semitones] = coord;
@@ -6,21 +10,21 @@ function absCoord(coord: PitchCoordinate): PitchCoordinate {
   return [Math.abs(diatonic), semitones * direction];
 }
 
-function octave(diatonic: number): number {
-  return Math.floor(diatonic / 7);
+function getOctave(diatonic: number): number {
+  return Math.floor(diatonic / DIATONICS_PER_OCTAVE);
 }
 
 function simplifyDiatonic(diatonic: number): number {
-  return diatonic % 7;
+  return diatonic % DIATONICS_PER_OCTAVE;
 }
 
 function simplifySemitones(semitones: number): number {
-  return semitones % 12;
+  return semitones % SEMITONES_PER_OCTAVE;
 }
 
 export default {
   absCoord,
-  octave,
+  getOctave,
   simplifyDiatonic,
   simplifySemitones,
 };

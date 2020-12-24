@@ -1,4 +1,9 @@
-import { PitchCoordinate, SCALE_SEMITONES } from './Constants';
+import {
+  DIATONICS_PER_OCTAVE,
+  PitchCoordinate,
+  SCALE_SEMITONES,
+  SEMITONES_PER_OCTAVE,
+} from './Constants';
 
 const ACCIDENTAL_CHAR_OFFSETS = { b: -1, '#': 1, x: 2 };
 const DEFAULT_COORD: PitchCoordinate = [0, 0];
@@ -30,9 +35,9 @@ export default class Pitch {
     const [, name, accidental = '', octave = '4'] = parsed;
     const octaveNum = Number(octave);
     const simpleDiatonic = this._getSimpleDiatonicFromName(name);
-    const octaveOffset = octaveNum * 12;
+    const octaveOffset = octaveNum * SEMITONES_PER_OCTAVE;
 
-    const diatonic = simpleDiatonic + octaveNum * 7;
+    const diatonic = simpleDiatonic + octaveNum * DIATONICS_PER_OCTAVE;
     const semitones =
       SCALE_SEMITONES[simpleDiatonic] +
       octaveOffset +
