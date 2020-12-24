@@ -1,10 +1,10 @@
-import Helpers from './Helpers';
-import Pitch from './Pitch';
 import {
   PitchCoordinate,
   SCALE_SEMITONES,
   SEMITONES_PER_OCTAVE,
 } from './Constants';
+import Helpers from './Helpers';
+import Pitch from './Pitch';
 
 const PERFECT_INTERVALS = new Set<number>([1, 4, 5]);
 const QUALITIES = { d: 'd', m: 'm', M: 'M', P: 'P', A: 'A' };
@@ -129,11 +129,11 @@ export default class Interval {
   }
 
   /**
-   * Distance in semitones from reference unmodified
+   * Distance in semitones from respective reference interval
    * Similar to a pitch's concept of accidentalOffset
    *
    * Ex. B3 -> D4 returns -1 as it's 1 semitone
-   *     below a major 3rd
+   *     below a major 3rd (reference interval)
    */
   qualityOffset(): number {
     const [diatonic, semitones] = this.absCoord();
