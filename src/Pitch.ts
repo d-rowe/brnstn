@@ -73,37 +73,27 @@ export default class Pitch {
   }
 
   accidental(): string {
-    let offset = this.accidentalOffset();
-    let accumilator = '';
+    const offset = this.accidentalOffset();
 
-    while (offset !== 0) {
-      if (offset < 0) {
-        accumilator += 'b';
-        offset += 1;
-        continue;
-      }
-
-      if (offset === 1) {
-        accumilator += '#';
-        offset -= 1;
-        continue;
-      }
-
-      if (offset > 1) {
-        accumilator += 'x';
-        offset -= 2;
-        continue;
-      }
+    if (offset < 0) {
+      return 'b'.repeat(Math.abs(offset));
     }
 
-    return accumilator;
+    if (offset > 0) {
+      const doubleSharpCount = Math.floor(offset / 2);
+      const singleSharpCount = offset - doubleSharpCount * 2;
+
+      return `${'x'.repeat(doubleSharpCount)}${'#'.repeat(singleSharpCount)}`;
+    }
+
+    return '';
   }
 
   accidentalOffset(): number {
     const diatonic = this.diatonic();
-    const referenceSemitones = Helpers.diatonicToSemitones(diatonic);
+    const diatonicSemitones = Helpers.diatonicToSemitones(diatonic);
 
-    return this.semitones() - referenceSemitones;
+    return this.semitones() - diatonicSemitones;
   }
 
   coord() {
