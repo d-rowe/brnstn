@@ -1,4 +1,5 @@
-import {PitchCoordinate, SCALE_SEMITONES, SEMITONES_PER_OCTAVE} from './Constants';
+import {SCALE_SEMITONES, SEMITONES_PER_OCTAVE} from './constants';
+import {PitchCoordinate} from './types';
 import Helpers from './Helpers';
 import Pitch from './Pitch';
 

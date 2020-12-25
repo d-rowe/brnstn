@@ -1,9 +1,5 @@
-import {
-    DIATONICS_PER_OCTAVE,
-    PitchCoordinate,
-    SEMITONES_PER_OCTAVE,
-    SCALE_SEMITONES,
-} from './Constants';
+import {DIATONICS_PER_OCTAVE, SEMITONES_PER_OCTAVE, SCALE_SEMITONES} from './constants';
+import {PitchCoordinate} from './types';
 
 export default {
     absCoord(coord: PitchCoordinate): PitchCoordinate {

@@ -1,6 +1,5 @@
-import Interval from '../src/Interval';
-import Pitch from '../src/Pitch';
-import {PitchCoordinate} from '../src/Constants';
+import {Interval, Pitch} from '../src';
+import {PitchCoordinate} from '../src/types';
 
 describe('Interval', () => {
     describe('#constructor', () => {

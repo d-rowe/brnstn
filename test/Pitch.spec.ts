@@ -1,5 +1,5 @@
-import {PitchCoordinate} from '../src/Constants';
-import Pitch from '../src/Pitch';
+import {Pitch} from '../src';
+import {PitchCoordinate} from '../src/types';
 
 describe('Pitch', () => {
     describe('#constructor', () => {
