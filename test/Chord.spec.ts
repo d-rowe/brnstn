@@ -1,10 +1,19 @@
 import {Chord, Pitch} from '../src';
 
 describe('Chord', () => {
-    describe('#intervalNames', () => {
-        it('should create correct array of interval names', () => {
-            const chord = chordFromSpns(['F4', 'A4', 'C5']);
-            expect(chord.intervalNames()).toEqual(['P1', 'M3', 'P5']);
+    describe('#intervalSignature', () => {
+        it('should create correct interval signature', () => {
+            expect(chordFromSpns(['F4', 'A4', 'C5']).intervalSignature()).toEqual('P1,M3,P5');
+            expect(chordFromSpns(['E4', 'G4', 'B4']).intervalSignature()).toEqual('P1,m3,P5');
+            expect(chordFromSpns(['B3', 'D4', 'F4']).intervalSignature()).toEqual('P1,m3,d5');
+        });
+    });
+
+    describe('#name', () => {
+        it('should provide correct names for root position chords', () => {
+            expect(chordFromSpns(['F4', 'A4', 'C5']).name()).toEqual('FM');
+            expect(chordFromSpns(['F4', 'Ab4', 'C5']).name()).toEqual('Fm');
+            expect(chordFromSpns(['C4', 'Eb4', 'Gb4']).name()).toEqual('Cd');
         });
     });
 });
