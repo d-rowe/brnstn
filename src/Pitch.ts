@@ -105,7 +105,7 @@ export default class Pitch {
     }
 
     octave() {
-        return Helpers.getOctave(this.diatonic());
+        return Helpers.getDiatonicOctave(this.diatonic());
     }
 
     semitones(): number {

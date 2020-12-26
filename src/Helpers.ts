@@ -8,13 +8,13 @@ export default {
         return [Math.abs(diatonic), semitones * direction];
     },
 
-    getOctave(diatonic: number): number {
+    getDiatonicOctave(diatonic: number): number {
         return Math.floor(diatonic / DIATONICS_PER_OCTAVE);
     },
 
     diatonicToSemitones(diatonic: number) {
         const simpleDiatonic = this.simplifyDiatonic(diatonic);
-        const octave = this.getOctave(diatonic);
+        const octave = this.getDiatonicOctave(diatonic);
         const octaveSemitones = octave * SEMITONES_PER_OCTAVE;
 
         return SCALE_SEMITONES[simpleDiatonic] + octaveSemitones;

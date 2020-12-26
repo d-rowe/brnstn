@@ -75,7 +75,7 @@ export default class Interval {
     }
 
     octaves(): number {
-        return Helpers.getOctave(this.diatonic());
+        return Helpers.getDiatonicOctave(this.diatonic());
     }
 
     semitones(): number {
@@ -136,7 +136,7 @@ export default class Interval {
         const [diatonic, semitones] = this.absCoord();
         const simpleDiatonic = Helpers.simplifyDiatonic(diatonic);
         const diatonicSemitones = SCALE_SEMITONES[simpleDiatonic];
-        const octave = Helpers.getOctave(diatonic);
+        const octave = Helpers.getDiatonicOctave(diatonic);
         const octaveSemitones = octave * SEMITONES_PER_OCTAVE;
         const referenceSemitones = diatonicSemitones + octaveSemitones;
 

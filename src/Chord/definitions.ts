@@ -1,3 +1,8 @@
+/**
+ * Chord and sonority definitions
+ * This is where we add definitions, aliases, etc
+ */
+
 interface StringMap {
     [key: string]: string;
 }
