@@ -31,12 +31,12 @@ export default class Chord {
         return this._pitches[0];
     }
 
-    intervalSignature(): string {
-        return getIntervalSignature(this._pitches);
+    serialize(): string {
+        return serialize(this._pitches);
     }
 
     sonority(): string {
-        const signature = this.intervalSignature();
+        const signature = this.serialize();
         const match = SIGNATURE_SONORITIES[signature];
 
         if (!match) {
@@ -47,7 +47,7 @@ export default class Chord {
     }
 }
 
-function getIntervalSignature(pitches: Pitch[]) {
+function serialize(pitches: Pitch[]) {
     const root = pitches[0];
 
     const intervals = pitches.map(p => {

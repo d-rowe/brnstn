@@ -1,11 +1,11 @@
-import {Chord, Pitch} from '../../src';
+import {Chord, Pitch} from '../src';
 
 describe('Chord', () => {
-    describe('#intervalSignature', () => {
+    describe('#serialize', () => {
         it('should create correct interval signature', () => {
-            expect(chordFromSpns(['F4', 'A4', 'C5']).intervalSignature()).toEqual('P1,M3,P5');
-            expect(chordFromSpns(['E4', 'G4', 'B4']).intervalSignature()).toEqual('P1,m3,P5');
-            expect(chordFromSpns(['B3', 'D4', 'F4']).intervalSignature()).toEqual('P1,m3,d5');
+            expect(chordFromSpns(['F4', 'A4', 'C5']).serialize()).toEqual('P1,M3,P5');
+            expect(chordFromSpns(['E4', 'G4', 'B4']).serialize()).toEqual('P1,m3,P5');
+            expect(chordFromSpns(['B3', 'D4', 'F4']).serialize()).toEqual('P1,m3,d5');
         });
     });
 
