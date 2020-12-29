@@ -17,13 +17,14 @@ interface StringMap {
 }
 
 const SONORITIES: StringMap = keyMirror({
-    M: null,
-    Mm7: null,
-    MM7: null,
-    m: null,
-    mm7: null,
-    mM7: null,
     d: null,
+    m: null,
+    M: null,
+    A: null,
+    mm: null,
+    mM: null,
+    Mm: null,
+    MM: null,
 });
 
 interface SonorityIntervals {
@@ -31,17 +32,25 @@ interface SonorityIntervals {
 }
 
 export const SONORITY_INTERVALS: SonorityIntervals = {
-    [SONORITIES.M]: ['P1', 'M3', 'P5'],
-    [SONORITIES.m]: ['P1', 'm3', 'P5'],
     [SONORITIES.d]: ['P1', 'm3', 'd5'],
+    [SONORITIES.m]: ['P1', 'm3', 'P5'],
+    [SONORITIES.M]: ['P1', 'M3', 'P5'],
     [SONORITIES.A]: ['P1', 'M3', 'A5'],
+    [SONORITIES.mm]: ['P1', 'm3', 'P5', 'm7'],
+    [SONORITIES.mM]: ['P1', 'm3', 'P5', 'M7'],
+    [SONORITIES.Mm]: ['P1', 'M3', 'P5', 'm7'],
+    [SONORITIES.MM]: ['P1', 'M3', 'P5', 'M7'],
 };
 
 export const SIGNATURE_SONORITIES: StringMap = <const>{
-    'P1,M3,P5': SONORITIES.M,
-    'P1,m3,P5': SONORITIES.m,
     'P1,m3,d5': SONORITIES.d,
+    'P1,m3,P5': SONORITIES.m,
+    'P1,M3,P5': SONORITIES.M,
     'P1,M3,A5': SONORITIES.A,
+    'P1,m3,P5,m7': SONORITIES.mm,
+    'P1,m3,P5,M7': SONORITIES.mM,
+    'P1,M3,P5,m7': SONORITIES.Mm,
+    'P1,M3,P5,M7': SONORITIES.MM,
 };
 
 /**
@@ -58,4 +67,8 @@ export const MIDI_SIGNATURE_SONORITIES: StringMap = <const>{
     '0,3,7': SONORITIES.m,
     '0,3,6': SONORITIES.d,
     '0,4,8': SONORITIES.A,
+    '0,3,7,10': SONORITIES.mm,
+    '0,3,7,11': SONORITIES.mM,
+    '0,4,7,10': SONORITIES.Mm,
+    '0,4,7,11': SONORITIES.MM,
 };
