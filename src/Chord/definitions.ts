@@ -42,7 +42,7 @@ export const SONORITY_INTERVALS: SonorityIntervals = {
     [SONORITIES.MM]: ['P1', 'M3', 'P5', 'M7'],
 };
 
-export const SIGNATURE_SONORITIES: StringMap = <const>{
+export const SERIAL_SONORITY_MAP: StringMap = <const>{
     'P1,m3,d5': SONORITIES.d,
     'P1,m3,P5': SONORITIES.m,
     'P1,M3,P5': SONORITIES.M,
@@ -62,7 +62,7 @@ export const SIGNATURE_SONORITIES: StringMap = <const>{
  * To assist with this we can compare relative differences in midi values
  * and check against this map for sonority definition
  */
-export const MIDI_SIGNATURE_SONORITIES: StringMap = <const>{
+export const MIDI_SERIAL_SONORITY_MAP: StringMap = <const>{
     '0,4,7': SONORITIES.M,
     '0,3,7': SONORITIES.m,
     '0,3,6': SONORITIES.d,

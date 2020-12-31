@@ -1,7 +1,7 @@
 import Interval from '../Interval';
 import Pitch from '../Pitch';
 import {PitchCoordinate} from '../types';
-import {SIGNATURE_SONORITIES} from './definitions';
+import {SERIAL_SONORITY_MAP} from './definitions';
 
 export default class Chord {
     private _pitches: Pitch[];
@@ -36,8 +36,8 @@ export default class Chord {
     }
 
     sonority(): string {
-        const signature = this.serialize();
-        const match = SIGNATURE_SONORITIES[signature];
+        const serialized = this.serialize();
+        const match = SERIAL_SONORITY_MAP[serialized];
 
         if (!match) {
             return '';

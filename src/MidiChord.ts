@@ -1,4 +1,4 @@
-import {MIDI_SIGNATURE_SONORITIES} from './Chord/definitions';
+import {MIDI_SERIAL_SONORITY_MAP} from './Chord/definitions';
 import {SEMITONES_PER_OCTAVE} from './constants';
 
 interface ParsedMidi {
@@ -38,8 +38,8 @@ export function parse(midis: number[]): ParsedMidi {
         });
 
         const sortedSemitones = rootRelativeMidi.sort();
-        const signature = sortedSemitones.join(',');
-        const sonority = MIDI_SIGNATURE_SONORITIES[signature];
+        const serialized = sortedSemitones.join(',');
+        const sonority = MIDI_SERIAL_SONORITY_MAP[serialized];
 
         if (sonority) {
             return {
