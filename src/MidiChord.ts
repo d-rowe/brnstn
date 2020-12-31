@@ -21,12 +21,20 @@ export default class MidiChord {
 /**
  * Inverts and normalizes midi number array to find
  * a matching sonority definition
+ *
+ * TODO:
+ *     This function should really return sonority and
+ *     respective Pitch objects
  */
 export function parse(midis: number[]): ParsedMidi {
-    // TODO: Investigate potential optimizations
     for (let i = 0; i < midis.length; i++) {
         const root = midis[i];
 
+        /**
+         * TODO:
+         *     The map, sort, and join here can be optimized
+         *     to be done in a single pass or rootRelativeMidi
+         */
         const rootRelativeMidi = midis.map(m => {
             let current = m - root;
 
