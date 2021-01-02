@@ -1,6 +1,7 @@
 import Helpers from '../Helpers';
 import {MIDI_SERIAL_SONORITY_MAP, SONORITY_INTERVALS} from './definitions';
-import {Interval, Pitch} from '..';
+import Interval from '../Interval';
+import Pitch from '../Pitch';
 import {DIATONICS_PER_OCTAVE, SEMITONES_PER_OCTAVE} from '../constants';
 
 type RootSonority = {
