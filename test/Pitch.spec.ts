@@ -81,6 +81,17 @@ describe('Pitch', () => {
             expect(pitchFromSpn('Gxx2').octave()).toBe(2);
         });
     });
+
+    describe('#spn', () => {
+        it('should calculate correct spn', () => {
+            expect(pitchFromSpn('Ebbb4').spn()).toBe('Ebbb4');
+            expect(pitchFromSpn('Cb4').spn()).toBe('Cb4');
+            expect(pitchFromSpn('D5').spn()).toBe('D5');
+            expect(pitchFromSpn('A#3').spn()).toBe('A#3');
+            expect(pitchFromSpn('Fx12').spn()).toBe('Fx12');
+            expect(pitchFromSpn('Gxx2').spn()).toBe('Gxx2');
+        });
+    });
 });
 
 function pitchFromSpn(spn: string): Pitch {

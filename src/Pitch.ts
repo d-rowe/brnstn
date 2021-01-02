@@ -116,7 +116,10 @@ export default class Pitch {
         return Helpers.simplifyDiatonic(this.diatonic());
     }
 
+    /**
+     * Returns scientific pitch notation
+     */
     spn() {
-        return `${this.letter()}${this.octave}`;
+        return `${this.letter()}${this.accidental()}${this.octave()}`;
     }
 }

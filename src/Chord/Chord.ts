@@ -32,7 +32,20 @@ export default class Chord {
     }
 
     serialize(): string {
-        return serialize(this._pitches);
+        const root = this._pitches[0];
+
+        const intervals = this._pitches.map(p => {
+            const curInterval = new Interval({
+                pitchRange: {
+                    start: root,
+                    end: p,
+                },
+            });
+
+            return curInterval.name();
+        });
+
+        return intervals.join(',');
     }
 
     sonority(): string {
@@ -45,21 +58,4 @@ export default class Chord {
 
         return match;
     }
-}
-
-function serialize(pitches: Pitch[]) {
-    const root = pitches[0];
-
-    const intervals = pitches.map(p => {
-        const curInterval = new Interval({
-            pitchRange: {
-                start: root,
-                end: p,
-            },
-        });
-
-        return curInterval.name();
-    });
-
-    return intervals.join(',');
 }

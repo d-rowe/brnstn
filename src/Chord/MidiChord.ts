@@ -1,21 +1,20 @@
+import Helpers from '../Helpers';
 import {MIDI_SERIAL_SONORITY_MAP} from './definitions';
+import {Pitch} from '..';
+import {PitchCoordinate} from '../types';
 import {SEMITONES_PER_OCTAVE} from '../constants';
 
-interface ParsedMidiChord {
-    sonority: string | null;
-    root: number | null;
-}
-
-const NULL_PARSE: ParsedMidiChord = {
-    sonority: null,
-    root: null,
-};
+type ParsedMidiChord = {
+    sonority: string;
+    root: number;
+} | null;
 
 /**
  * NOTE: This assumes midi number array is sorted
  */
 export default class MidiChord {
     private _midis: number[];
+    private _parseCache: ParsedMidiChord = null;
 
     constructor(midis: number[]) {
         this._midis = midis;
@@ -52,10 +51,30 @@ export default class MidiChord {
             const sonority = this._getSonorityForRoot(root);
 
             if (sonority) {
-                return {sonority, root};
+                this._parseCache = {root, sonority};
+                return this._parseCache;
             }
         }
 
-        return NULL_PARSE;
+        this._parseCache = null;
+
+        return this._parseCache;
+    }
+
+    pitches(): Pitch[] {
+        if (!this._parseCache) {
+            this.parse();
+
+            if (!this._parseCache) {
+                return [];
+            }
+        }
+
+        const {root: rootMidi} = this._parseCache;
+        const rootDiatonic = Helpers.semitonesToNearestDiatonic(rootMidi);
+        const rootCoord: PitchCoordinate = [rootMidi, rootDiatonic];
+        const rootPitch = new Pitch({coord: rootCoord});
+
+        return [rootPitch];
     }
 }
