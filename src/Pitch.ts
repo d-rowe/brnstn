@@ -5,7 +5,7 @@ import {PitchCoordinate} from './types';
 const ACCIDENTAL_CHAR_OFFSETS = {b: -1, '#': 1, x: 2};
 const DEFAULT_COORD: PitchCoordinate = [0, 0];
 const PITCH_NAMES = 'CDEFGAB';
-const spnRegEx = /([a-gA-G])([b|#|x]*)?(-?[0-9]*)?/;
+const SPN_REGEX = /([a-gA-G])([b|#|x]*)?(-?[0-9]*)?/;
 
 interface Props {
     coord?: PitchCoordinate;
@@ -24,7 +24,7 @@ export default class Pitch {
     }
 
     private _getCoordFromSpn(spn: string): PitchCoordinate {
-        const parsed = spnRegEx.exec(spn);
+        const parsed = SPN_REGEX.exec(spn);
 
         if (!parsed) {
             throw new Error(`Cannot parse invalid scientific pitch notation: ${spn}`);

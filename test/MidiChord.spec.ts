@@ -1,24 +1,20 @@
-import sinon from 'sinon';
 import {MidiChord} from '../src/Chord';
 
 describe('MidiChord', () => {
-    describe('#parse', () => {
+    describe('#rootSonority', () => {
         it('should calculate correct sonority and root', () => {
-            expect(new MidiChord([2, 6, 9]).parse()).toEqual({sonority: 'M', root: 2});
-            expect(new MidiChord([6, 10, 15]).parse()).toEqual({sonority: 'm', root: 15});
+            expect(new MidiChord([2, 6, 9]).rootSonority()).toEqual({sonority: 'M', root: 2});
+            expect(new MidiChord([6, 10, 15]).rootSonority()).toEqual({sonority: 'm', root: 15});
         });
     });
 
     describe('#pitches', () => {
-        it('should parse chord if not already parsed', () => {
-            const parseStub = sinon
-                .stub(MidiChord.prototype, 'parse')
-                .returns({sonority: 'M', root: 2});
-            new MidiChord([2, 6, 9]).pitches();
+        // TODO: add cache tests
+        it('should return correct pitches', () => {
+            const pitches = new MidiChord([6, 10, 15]).pitches();
+            const pitchSpns = pitches.map(p => p.spn());
 
-            expect(parseStub.called);
-
-            parseStub.restore();
+            expect(pitchSpns).toEqual(['F#0', 'A#0', 'D#1']);
         });
     });
 });

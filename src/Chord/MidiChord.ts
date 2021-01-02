@@ -1,10 +1,9 @@
 import Helpers from '../Helpers';
-import {MIDI_SERIAL_SONORITY_MAP} from './definitions';
-import {Pitch} from '..';
-import {PitchCoordinate} from '../types';
-import {SEMITONES_PER_OCTAVE} from '../constants';
+import {MIDI_SERIAL_SONORITY_MAP, SONORITY_INTERVALS} from './definitions';
+import {Interval, Pitch} from '..';
+import {DIATONICS_PER_OCTAVE, SEMITONES_PER_OCTAVE} from '../constants';
 
-type ParsedMidiChord = {
+type RootSonority = {
     sonority: string;
     root: number;
 } | null;
@@ -14,7 +13,8 @@ type ParsedMidiChord = {
  */
 export default class MidiChord {
     private _midis: number[];
-    private _parseCache: ParsedMidiChord = null;
+    private _rootSonorityCache: RootSonority = null;
+    private _pitchesCache: Pitch[] = [];
 
     constructor(midis: number[]) {
         this._midis = midis;
@@ -43,7 +43,11 @@ export default class MidiChord {
      * Inverts and normalizes midi number array to find
      * a matching sonority definition
      */
-    parse(): ParsedMidiChord {
+    rootSonority(): RootSonority {
+        if (this._rootSonorityCache) {
+            return this._rootSonorityCache;
+        }
+
         for (let i = 0; i < this._midis.length; i++) {
             // We're going to try each note as a potential root
             // as the chord can be inverted
@@ -51,30 +55,58 @@ export default class MidiChord {
             const sonority = this._getSonorityForRoot(root);
 
             if (sonority) {
-                this._parseCache = {root, sonority};
-                return this._parseCache;
+                this._rootSonorityCache = {root, sonority};
+                return this._rootSonorityCache;
             }
         }
 
-        this._parseCache = null;
+        this._rootSonorityCache = null;
 
-        return this._parseCache;
+        return this._rootSonorityCache;
     }
 
     pitches(): Pitch[] {
-        if (!this._parseCache) {
-            this.parse();
+        if (this._pitchesCache.length !== 0) {
+            return this._pitchesCache;
+        }
 
-            if (!this._parseCache) {
+        if (!this._rootSonorityCache) {
+            this.rootSonority();
+
+            if (!this._rootSonorityCache) {
                 return [];
             }
         }
 
-        const {root: rootMidi} = this._parseCache;
+        const {root: rootMidi, sonority} = this._rootSonorityCache;
+        const intervalNames = SONORITY_INTERVALS[sonority];
+        const intervals = intervalNames.map(name => new Interval({name}));
         const rootDiatonic = Helpers.semitonesToNearestDiatonic(rootMidi);
-        const rootCoord: PitchCoordinate = [rootMidi, rootDiatonic];
-        const rootPitch = new Pitch({coord: rootCoord});
+        const rootPitch = new Pitch({coord: [rootDiatonic, rootMidi]});
 
-        return [rootPitch];
+        this._pitchesCache = [];
+
+        this._midis.forEach(m => {
+            if (m === rootMidi) {
+                this._pitchesCache.push(rootPitch);
+                return;
+            }
+
+            for (let i = 0; i < intervals.length; i++) {
+                const [refIntervalDiatonic, refIntervalSemitones] = intervals[i].coord();
+                const refDiatonic = refIntervalDiatonic + rootPitch.diatonic();
+                const refSemitones = refIntervalSemitones + rootPitch.semitones();
+
+                if (Helpers.simplifySemitones(m) === Helpers.simplifySemitones(refSemitones)) {
+                    const octaveOffset = Helpers.getSemitoneOctave(m) * DIATONICS_PER_OCTAVE;
+                    const diatonic = Helpers.simplifyDiatonic(refDiatonic) + octaveOffset;
+
+                    this._pitchesCache.push(new Pitch({coord: [diatonic, m]}));
+                    return;
+                }
+            }
+        });
+
+        return this._pitchesCache;
     }
 }

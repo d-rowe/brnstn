@@ -42,7 +42,7 @@ export default {
             const diff = Math.abs(simpleSemitones - refSemitones);
             if (diff < minDiff) {
                 minDiff = diff;
-                closestDiatonic = diatonic;
+                closestDiatonic = diatonic + octaveOffset;
             }
         }
 

@@ -3,8 +3,25 @@ import {PitchCoordinate} from '../src/types';
 
 describe('Interval', () => {
     describe('#constructor', () => {
-        it('should calculate from pitch range correctly', () => {
-            expectCoords([
+        it('should calculate coord from name correctly', () => {
+            const nameCoordExpectations: [string, PitchCoordinate][] = [
+                ['P1', [0, 0]],
+                ['d2', [1, 0]],
+                ['m2', [1, 1]],
+                ['M2', [1, 2]],
+                ['A2', [1, 3]],
+                ['d11', [10, 16]],
+                ['P11', [10, 17]],
+                ['A11', [10, 18]],
+            ];
+
+            nameCoordExpectations.forEach(([name, coord]) => {
+                expect(new Interval({name}).coord()).toEqual(coord);
+            });
+        });
+
+        it('should calculate coord from pitch range correctly', () => {
+            expectPitchRangeCoords([
                 ['C4', 'C4', [0, 0]],
                 ['C4', 'D4', [1, 2]],
                 ['C4', 'F#6', [17, 30]],
@@ -79,7 +96,7 @@ function getIntervalFromSpnRange(startSpn: string, endSpn: string): Interval {
     });
 }
 
-function expectCoords(expectations: [string, string, PitchCoordinate][]): void {
+function expectPitchRangeCoords(expectations: [string, string, PitchCoordinate][]): void {
     expectations.forEach(([startSpn, endSpn, coord]) => {
         expect(getIntervalFromSpnRange(startSpn, endSpn).coord()).toEqual(coord);
     });

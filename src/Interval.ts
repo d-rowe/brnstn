@@ -5,22 +5,37 @@ import Pitch from './Pitch';
 
 const PERFECT_INTERVALS = new Set<number>([1, 4, 5]);
 const QUALITIES = {d: 'd', m: 'm', M: 'M', P: 'P', A: 'A'};
+const NAME_REGEX = /([d|m|M|P|A]*)([1-9]*)/;
 
-const PERFECT_OFFSETS = new Map<number, string>([
+const PERFECT_OFFSETS_QUALITIES = new Map<number, string>([
     [-1, QUALITIES.d],
     [0, QUALITIES.P],
     [1, QUALITIES.A],
 ]);
 
-const MAJOR_OFFSETS = new Map<number, string>([
+const MAJOR_OFFSETS_QUALITIES = new Map<number, string>([
     [-2, QUALITIES.d],
     [-1, QUALITIES.m],
     [0, QUALITIES.M],
     [1, QUALITIES.A],
 ]);
 
+const PERFECT_QUALITY_OFFSETS = new Map<string, number>([
+    [QUALITIES.d, -1],
+    [QUALITIES.P, 0],
+    [QUALITIES.A, 1],
+]);
+
+const MAJOR_QUALITY_OFFSETS = new Map<string, number>([
+    [QUALITIES.d, -2],
+    [QUALITIES.m, -1],
+    [QUALITIES.M, 0],
+    [QUALITIES.A, 1],
+]);
+
 interface Props {
     coord?: PitchCoordinate;
+    name?: string;
     pitchRange?: {
         start: Pitch;
         end: Pitch;
@@ -28,16 +43,52 @@ interface Props {
 }
 
 export default class Interval {
-    private _coord: PitchCoordinate;
+    private _coord: PitchCoordinate = [0, 0];
 
-    constructor({coord, pitchRange}: Props) {
-        if (!coord && !pitchRange) {
+    constructor({coord, name, pitchRange}: Props) {
+        if (!coord && !name && !pitchRange) {
             throw new Error('Interval must have either coord or pitch range');
         }
 
-        this._coord = pitchRange
-            ? this._getCoordFromPitchRange(pitchRange.start, pitchRange.end)
-            : coord || [0, 0];
+        if (coord) {
+            this._coord = coord;
+            return;
+        }
+
+        if (name) {
+            this._coord = this._getCoordFromName(name);
+            return;
+        }
+
+        if (pitchRange) {
+            this._coord = this._getCoordFromPitchRange(pitchRange.start, pitchRange.end);
+            return;
+        }
+    }
+
+    private _getCoordFromName(name: string): PitchCoordinate {
+        const parsed = NAME_REGEX.exec(name);
+
+        if (!parsed) {
+            throw new Error(`Cannot parse invalid interval name: ${name}`);
+        }
+
+        const [, quality, intervalDiatonic] = parsed;
+        const intervalDiatonicNum = Number(intervalDiatonic);
+        const simpleIntervalDiatonic = Helpers.simplifyDiatonic(intervalDiatonicNum);
+        const diatonic = intervalDiatonicNum - 1;
+        let semitones = Helpers.diatonicToSemitones(diatonic);
+
+        const offsetMap = PERFECT_INTERVALS.has(simpleIntervalDiatonic)
+            ? PERFECT_QUALITY_OFFSETS
+            : MAJOR_QUALITY_OFFSETS;
+
+        for (let i = 0; i < quality.length; i++) {
+            const qualityChar = quality[i];
+            semitones += offsetMap.get(qualityChar) || 0;
+        }
+
+        return [diatonic, semitones];
     }
 
     private _getCoordFromPitchRange(start: Pitch, end: Pitch): PitchCoordinate {
@@ -104,7 +155,7 @@ export default class Interval {
     quality(): string {
         const absSimpleDiatonic = Math.abs(this.simpleDiatonic());
         const isPerfectType = PERFECT_INTERVALS.has(absSimpleDiatonic + 1);
-        const offsetMap = isPerfectType ? PERFECT_OFFSETS : MAJOR_OFFSETS;
+        const offsetMap = isPerfectType ? PERFECT_OFFSETS_QUALITIES : MAJOR_OFFSETS_QUALITIES;
         const offset = this.qualityOffset();
         const absOffset = Math.abs(offset);
         const match = offsetMap.get(offset);
