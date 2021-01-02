@@ -5,7 +5,7 @@ import {PitchCoordinate} from './types';
 const ACCIDENTAL_CHAR_OFFSETS = {b: -1, '#': 1, x: 2};
 const DEFAULT_COORD: PitchCoordinate = [0, 0];
 const PITCH_NAMES = 'CDEFGAB';
-const SPN_REGEX = /([a-gA-G])([b|#|x]*)?(-?[0-9]*)?/;
+const SPN_REGEX = /^([a-gA-G])([b|#|x]*)?(-?[0-9]*)?$/;
 
 interface Props {
     coord?: PitchCoordinate;
@@ -92,7 +92,7 @@ export default class Pitch {
         return this.semitones() - diatonicSemitones;
     }
 
-    coord() {
+    coord(): PitchCoordinate {
         return this._coord;
     }
 
@@ -100,11 +100,15 @@ export default class Pitch {
         return this.coord()[0];
     }
 
-    letter() {
+    letter(): string {
         return PITCH_NAMES[this.simpleDiatonic()];
     }
 
-    octave() {
+    name(): string {
+        return `${this.letter()}${this.accidental}`;
+    }
+
+    octave(): number {
         return Helpers.getDiatonicOctave(this.diatonic());
     }
 
@@ -119,7 +123,7 @@ export default class Pitch {
     /**
      * Returns scientific pitch notation
      */
-    spn() {
+    spn(): string {
         return `${this.letter()}${this.accidental()}${this.octave()}`;
     }
 }

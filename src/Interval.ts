@@ -5,7 +5,7 @@ import Pitch from './Pitch';
 
 const PERFECT_INTERVALS = new Set<number>([1, 4, 5]);
 const QUALITIES = {d: 'd', m: 'm', M: 'M', P: 'P', A: 'A'};
-const NAME_REGEX = /([d|m|M|P|A]*)([1-9]*)/;
+const NAME_REGEX = /^([d|m|M|P|A]*)([1-9]*)$/;
 
 const PERFECT_OFFSETS_QUALITIES = new Map<number, string>([
     [-1, QUALITIES.d],
