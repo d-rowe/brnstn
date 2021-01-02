@@ -37,16 +37,16 @@
     "trailingComma": "es5",
     "tabWidth": 4
   },
-  "name": "m-theory",
+  "name": "brnstn",
   "author": "Daniel Rowe",
-  "module": "dist/m-theory.esm.js",
+  "module": "dist/brnstn.esm.js",
   "size-limit": [
     {
-      "path": "dist/m-theory.cjs.production.min.js",
+      "path": "dist/brnstn.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/m-theory.esm.js",
+      "path": "dist/brnstn.esm.js",
       "limit": "10 KB"
     }
   ],
