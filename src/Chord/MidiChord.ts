@@ -1,31 +1,29 @@
 import Helpers from '../Helpers';
-import {MIDI_SERIAL_SONORITY_MAP, SONORITY_INTERVALS} from './definitions';
 import Interval from '../Interval';
 import Pitch from '../Pitch';
 import {DIATONICS_PER_OCTAVE, SEMITONES_PER_OCTAVE} from '../constants';
+import {MIDI_SERIAL_SONORITY_MAP, SONORITY_INTERVALS} from './definitions';
 
-type RootSonority = {
+type RootSonorityCache = {
     sonority: string;
     root: number;
 } | null;
 
-/**
- * NOTE: This assumes midi number array is sorted
- */
 export default class MidiChord {
-    private _midis: number[];
-    private _rootSonorityCache: RootSonority = null;
+    private _midiNums: number[] = [];
+    private _rootSonorityCache: RootSonorityCache = null;
     private _pitchesCache: Pitch[] = [];
 
-    constructor(midis: number[]) {
-        this._midis = midis;
+    constructor(midiNums?: number[]) {
+        this._midiNums = midiNums || [];
     }
 
     /**
-     * Tries to find sonority match for a given root
+     * Tries to find a matching sonority definition match
+     * built from a given root
      */
     private _getSonorityForRoot(root: number): string {
-        const rootRelativeMidi = this._midis.map(m => {
+        const rootRelativeMidi = this._midiNums.map(m => {
             let current = m - root;
 
             while (current <= 0) {
@@ -35,24 +33,27 @@ export default class MidiChord {
             return current % SEMITONES_PER_OCTAVE;
         });
 
-        const serialized = rootRelativeMidi.sort().join(',');
+        const sortedRootRelativeMidi = rootRelativeMidi.sort((a, b) => a - b);
+        const serialized = sortedRootRelativeMidi.join(',');
 
         return MIDI_SERIAL_SONORITY_MAP[serialized] || '';
     }
 
     /**
      * Inverts and normalizes midi number array to find
-     * a matching sonority definition
+     * a matching sonority definition and caches the result
+     *
+     * This is the main parsing algorithm
      */
-    rootSonority(): RootSonority {
+    private _getOrSetRootSonorityCache(): RootSonorityCache {
         if (this._rootSonorityCache) {
             return this._rootSonorityCache;
         }
 
-        for (let i = 0; i < this._midis.length; i++) {
+        for (let i = 0; i < this._midiNums.length; i++) {
             // We're going to try each note as a potential root
             // as the chord can be inverted
-            const root = this._midis[i];
+            const root = this._midiNums[i];
             const sonority = this._getSonorityForRoot(root);
 
             if (sonority) {
@@ -66,17 +67,39 @@ export default class MidiChord {
         return this._rootSonorityCache;
     }
 
+    root(): Pitch {
+        this._getOrSetRootSonorityCache();
+        if (!this._rootSonorityCache) {
+            return new Pitch({});
+        }
+
+        return new Pitch({semitones: this._rootSonorityCache.root});
+    }
+
+    setMidi(midiNums: number[]): void {
+        this._rootSonorityCache = null;
+        this._pitchesCache = [];
+
+        this._midiNums = midiNums;
+    }
+
+    sonority(): string {
+        this._getOrSetRootSonorityCache();
+        if (!this._rootSonorityCache) {
+            return '';
+        }
+
+        return this._rootSonorityCache.sonority;
+    }
+
     pitches(): Pitch[] {
         if (this._pitchesCache.length !== 0) {
             return this._pitchesCache;
         }
 
+        this._getOrSetRootSonorityCache();
         if (!this._rootSonorityCache) {
-            this.rootSonority();
-
-            if (!this._rootSonorityCache) {
-                return [];
-            }
+            return [];
         }
 
         const {root: rootMidi, sonority} = this._rootSonorityCache;
@@ -87,7 +110,7 @@ export default class MidiChord {
 
         this._pitchesCache = [];
 
-        this._midis.forEach(m => {
+        this._midiNums.forEach(m => {
             if (m === rootMidi) {
                 this._pitchesCache.push(rootPitch);
                 return;

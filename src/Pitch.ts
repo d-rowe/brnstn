@@ -7,20 +7,27 @@ const DEFAULT_COORD: PitchCoordinate = [0, 0];
 const PITCH_NAMES = 'CDEFGAB';
 const SPN_REGEX = /^([a-gA-G])([b|#|x]*)?(-?[0-9]*)?$/;
 
-interface Props {
+type Props = {
     coord?: PitchCoordinate;
+    semitones?: number;
     spn?: string;
-}
+};
 
 export default class Pitch {
     private _coord: PitchCoordinate;
 
-    constructor({coord, spn}: Props) {
-        if (!coord && !spn) {
-            throw new Error('Pitch needs either coord or spn');
+    constructor({coord, semitones, spn}: Props) {
+        if (spn) {
+            this._coord = this._getCoordFromSpn(spn);
+            return;
         }
 
-        this._coord = spn ? this._getCoordFromSpn(spn) : coord || DEFAULT_COORD;
+        if (semitones) {
+            this._coord = this._getCoordFromSemitones(semitones);
+            return;
+        }
+
+        this._coord = coord || DEFAULT_COORD;
     }
 
     private _getCoordFromSpn(spn: string): PitchCoordinate {
@@ -38,6 +45,12 @@ export default class Pitch {
         const octaveOffset = octaveNum * SEMITONES_PER_OCTAVE;
         const accidentalOffset = this._getOffsetFromAccidental(accidental);
         const semitones = simpleSemitones + octaveOffset + accidentalOffset;
+
+        return [diatonic, semitones];
+    }
+
+    private _getCoordFromSemitones(semitones: number): PitchCoordinate {
+        const diatonic = Helpers.semitonesToNearestDiatonic(semitones);
 
         return [diatonic, semitones];
     }
@@ -105,7 +118,7 @@ export default class Pitch {
     }
 
     name(): string {
-        return `${this.letter()}${this.accidental}`;
+        return `${this.letter()}${this.accidental()}`;
     }
 
     octave(): number {
