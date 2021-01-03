@@ -23,14 +23,26 @@ export default class MidiChord {
      * built from a given root
      */
     private _getSonorityForRoot(root: number): string {
-        const rootRelativeMidi = this._midiNums.map(m => {
+        const uniqueSimpleMidi: Set<number> = new Set();
+
+        const rootRelativeMidi: number[] = [];
+
+        this._midiNums.forEach(m => {
+            const simpleMidi = Helpers.simplifySemitones(m);
+
+            if (uniqueSimpleMidi.has(simpleMidi)) {
+                return;
+            }
+
+            uniqueSimpleMidi.add(simpleMidi);
+
             let current = m - root;
 
             while (current <= 0) {
                 current += SEMITONES_PER_OCTAVE;
             }
 
-            return current % SEMITONES_PER_OCTAVE;
+            rootRelativeMidi.push(Helpers.simplifySemitones(current));
         });
 
         const sortedRootRelativeMidi = rootRelativeMidi.sort((a, b) => a - b);
