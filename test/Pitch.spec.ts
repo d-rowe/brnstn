@@ -54,9 +54,9 @@ describe('Pitch', () => {
             expect(pitchFromSpn('Cb4').accidental()).toBe('b');
             expect(pitchFromSpn('D5').accidental()).toBe('');
             expect(pitchFromSpn('A#3').accidental()).toBe('#');
-            expect(pitchFromSpn('Fx12').accidental()).toBe('x');
-            expect(pitchFromSpn('Ax#4').accidental()).toBe('x#');
-            expect(pitchFromSpn('Gxx2').accidental()).toBe('xx');
+            expect(pitchFromSpn('Fx12').accidental()).toBe('##');
+            expect(pitchFromSpn('Ax#4').accidental()).toBe('###');
+            expect(pitchFromSpn('Gxx2').accidental()).toBe('####');
         });
     });
 
@@ -88,8 +88,8 @@ describe('Pitch', () => {
             expect(pitchFromSpn('Cb4').spn()).toBe('Cb4');
             expect(pitchFromSpn('D5').spn()).toBe('D5');
             expect(pitchFromSpn('A#3').spn()).toBe('A#3');
-            expect(pitchFromSpn('Fx12').spn()).toBe('Fx12');
-            expect(pitchFromSpn('Gxx2').spn()).toBe('Gxx2');
+            expect(pitchFromSpn('Fx12').spn()).toBe('F##12');
+            expect(pitchFromSpn('Gxx2').spn()).toBe('G####2');
         });
     });
 });

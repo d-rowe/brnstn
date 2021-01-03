@@ -89,10 +89,7 @@ export default class Pitch {
         }
 
         if (offset > 0) {
-            const doubleSharpCount = Math.floor(offset / 2);
-            const singleSharpCount = offset - doubleSharpCount * 2;
-
-            return `${'x'.repeat(doubleSharpCount)}${'#'.repeat(singleSharpCount)}`;
+            return '#'.repeat(offset);
         }
 
         return '';
