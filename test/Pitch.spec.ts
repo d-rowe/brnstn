@@ -95,7 +95,7 @@ describe('Pitch', () => {
 });
 
 function pitchFromSpn(spn: string): Pitch {
-    return new Pitch({spn});
+    return new Pitch(spn);
 }
 
 function expectSpnCoords(expected: [string, PitchCoordinate][]): void {

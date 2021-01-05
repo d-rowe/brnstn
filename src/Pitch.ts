@@ -3,31 +3,30 @@ import Helpers from './Helpers';
 import {PitchCoordinate} from './types';
 
 const ACCIDENTAL_CHAR_OFFSETS = {b: -1, '#': 1, x: 2};
-const DEFAULT_COORD: PitchCoordinate = [0, 0];
 const PITCH_NAMES = 'CDEFGAB';
 const SPN_REGEX = /^([a-gA-G])([b|#|x]*)?(-?[0-9]*)?$/;
 
-type Props = {
-    coord?: PitchCoordinate;
-    semitones?: number;
-    spn?: string;
-};
-
 export default class Pitch {
-    private _coord: PitchCoordinate;
+    private _coord?: PitchCoordinate;
 
-    constructor({coord, semitones, spn}: Props) {
-        if (spn) {
-            this._coord = this._getCoordFromSpn(spn);
+    constructor(spn?: string) {
+        if (!spn) {
             return;
         }
 
-        if (semitones) {
-            this._coord = this._getCoordFromSemitones(semitones);
-            return;
-        }
+        this._coord = this._getCoordFromSpn(spn);
+    }
 
-        this._coord = coord || DEFAULT_COORD;
+    fromCoord(coord: PitchCoordinate): Pitch {
+        this._coord = coord;
+
+        return this;
+    }
+
+    fromSemitones(semitones: number): Pitch {
+        this._coord = this._getCoordFromSemitones(semitones);
+
+        return this;
     }
 
     private _getCoordFromSpn(spn: string): PitchCoordinate {
@@ -103,6 +102,10 @@ export default class Pitch {
     }
 
     coord(): PitchCoordinate {
+        if (!this._coord) {
+            throw new Error('Cannot get coordinate of uninitialized pitch');
+        }
+
         return this._coord;
     }
 

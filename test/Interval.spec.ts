@@ -88,7 +88,7 @@ describe('Interval', () => {
 });
 
 function getIntervalFromSpnRange(startSpn: string, endSpn: string): Interval {
-    return new Interval().fromPitchRange(new Pitch({spn: startSpn}), new Pitch({spn: endSpn}));
+    return new Interval().fromPitchRange(new Pitch(startSpn), new Pitch(endSpn));
 }
 
 function expectPitchRangeCoords(expectations: [string, string, PitchCoordinate][]): void {

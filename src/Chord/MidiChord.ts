@@ -76,10 +76,10 @@ export default class MidiChord {
     root(): Pitch {
         const {semitones} = this.getSemitonesAndSonority();
         if (!semitones) {
-            return new Pitch({});
+            return new Pitch();
         }
 
-        return new Pitch({semitones});
+        return new Pitch().fromSemitones(semitones);
     }
 
     setMidi(midiNums: number[]): void {
@@ -107,7 +107,7 @@ export default class MidiChord {
         const intervalNames = SONORITY_INTERVALS[sonority];
         const intervals = intervalNames.map(name => new Interval(name));
         const rootDiatonic = Helpers.semitonesToNearestDiatonic(semitones);
-        const rootPitch = new Pitch({coord: [rootDiatonic, semitones]});
+        const rootPitch = new Pitch().fromCoord([rootDiatonic, semitones]);
 
         const parsedPitches: Pitch[] = [];
         const parsedIntervals: Interval[] = [];
@@ -126,7 +126,7 @@ export default class MidiChord {
                 if (Helpers.simplifySemitones(m) === Helpers.simplifySemitones(refSemitones)) {
                     const octaveOffset = Helpers.getSemitoneOctave(m) * DIATONICS_PER_OCTAVE;
                     const diatonic = Helpers.simplifyDiatonic(refDiatonic) + octaveOffset;
-                    const pitch = new Pitch({coord: [diatonic, m]});
+                    const pitch = new Pitch().fromCoord([diatonic, m]);
 
                     parsedPitches.push(pitch);
                     return;

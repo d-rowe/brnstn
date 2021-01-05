@@ -19,6 +19,6 @@ describe('Chord', () => {
 });
 
 function chordFromSpns(spns: string[]): Chord {
-    const pitches = spns.map(spn => new Pitch({spn}));
+    const pitches = spns.map(spn => new Pitch(spn));
     return new Chord(pitches);
 }
