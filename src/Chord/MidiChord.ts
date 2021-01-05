@@ -94,6 +94,10 @@ export default class MidiChord {
         return this.getPitchesAndIntervals().pitches;
     }
 
+    intervals(): Interval[] {
+        return this.getPitchesAndIntervals().intervals;
+    }
+
     getPitchesAndIntervals(): {pitches: Pitch[]; intervals: Interval[]} {
         const {semitones, sonority} = this.getSemitonesAndSonority();
 
@@ -128,6 +132,7 @@ export default class MidiChord {
                     const diatonic = Helpers.simplifyDiatonic(refDiatonic) + octaveOffset;
                     const pitch = new Pitch().fromCoord([diatonic, m]);
 
+                    parsedIntervals.push(new Interval().fromPitchRange(rootPitch, pitch));
                     parsedPitches.push(pitch);
                     return;
                 }
