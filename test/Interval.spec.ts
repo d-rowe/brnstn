@@ -16,7 +16,7 @@ describe('Interval', () => {
             ];
 
             nameCoordExpectations.forEach(([name, coord]) => {
-                expect(new Interval({name}).coord()).toEqual(coord);
+                expect(new Interval(name).coord()).toEqual(coord);
             });
         });
 
@@ -31,12 +31,12 @@ describe('Interval', () => {
 
     describe('#absCoord', () => {
         it('should leave ascending coordinates unchanged', () => {
-            const interval = new Interval({coord: [12, 36]});
+            const interval = new Interval().fromCoord([12, 36]);
             expect(interval.absCoord()).toEqual([12, 36]);
         });
 
         it('should return ascending coordinate for descending coordinate', () => {
-            const interval = new Interval({coord: [-12, -36]});
+            const interval = new Interval().fromCoord([-12, -36]);
             expect(interval.absCoord()).toEqual([12, 36]);
         });
     });
@@ -88,12 +88,7 @@ describe('Interval', () => {
 });
 
 function getIntervalFromSpnRange(startSpn: string, endSpn: string): Interval {
-    return new Interval({
-        pitchRange: {
-            start: new Pitch({spn: startSpn}),
-            end: new Pitch({spn: endSpn}),
-        },
-    });
+    return new Interval().fromPitchRange(new Pitch({spn: startSpn}), new Pitch({spn: endSpn}));
 }
 
 function expectPitchRangeCoords(expectations: [string, string, PitchCoordinate][]): void {

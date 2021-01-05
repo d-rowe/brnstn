@@ -33,37 +33,30 @@ const MAJOR_QUALITY_OFFSETS = new Map<string, number>([
     [QUALITIES.A, 1],
 ]);
 
-interface Props {
-    coord?: PitchCoordinate;
-    name?: string;
-    pitchRange?: {
-        start: Pitch;
-        end: Pitch;
-    };
-}
-
 export default class Interval {
     private _coord: PitchCoordinate = [0, 0];
 
-    constructor({coord, name, pitchRange}: Props) {
-        if (!coord && !name && !pitchRange) {
-            throw new Error('Interval must have either coord or pitch range');
-        }
-
-        if (coord) {
-            this._coord = coord;
+    constructor(name?: string) {
+        if (!name) {
             return;
         }
 
-        if (name) {
-            this._coord = this._getCoordFromName(name);
-            return;
-        }
+        this._coord = this._getCoordFromName(name);
+    }
 
-        if (pitchRange) {
-            this._coord = this._getCoordFromPitchRange(pitchRange.start, pitchRange.end);
-            return;
-        }
+    fromCoord(coord: PitchCoordinate): Interval {
+        this._coord = coord;
+
+        return this;
+    }
+
+    fromPitchRange(start: Pitch, end: Pitch): Interval {
+        const [startDiatonic, startSemitones] = start.coord();
+        const [endDiatonic, endSemitones] = end.coord();
+
+        this._coord = [endDiatonic - startDiatonic, endSemitones - startSemitones];
+
+        return this;
     }
 
     private _getCoordFromName(name: string): PitchCoordinate {
@@ -89,13 +82,6 @@ export default class Interval {
         }
 
         return [diatonic, semitones];
-    }
-
-    private _getCoordFromPitchRange(start: Pitch, end: Pitch): PitchCoordinate {
-        const [startDiatonic, startSemitones] = start.coord();
-        const [endDiatonic, endSemitones] = end.coord();
-
-        return [endDiatonic - startDiatonic, endSemitones - startSemitones];
     }
 
     absCoord(): PitchCoordinate {
@@ -134,7 +120,7 @@ export default class Interval {
     }
 
     simple(): Interval {
-        return new Interval({coord: this.simpleCoord()});
+        return new Interval().fromCoord(this.simpleCoord());
     }
 
     simpleCoord(): PitchCoordinate {

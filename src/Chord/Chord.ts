@@ -35,12 +35,7 @@ export default class Chord {
         const root = this._pitches[0];
 
         const intervals = this._pitches.map(p => {
-            const curInterval = new Interval({
-                pitchRange: {
-                    start: root,
-                    end: p,
-                },
-            });
+            const curInterval = new Interval().fromPitchRange(root, p);
 
             return curInterval.name();
         });
