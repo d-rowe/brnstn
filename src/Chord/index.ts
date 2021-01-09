@@ -1,2 +1,2 @@
 export {default} from './Chord';
-export {default as MidiChord} from './MidiChord';
+export {default as IntegerChord} from './IntegerChord';

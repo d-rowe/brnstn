@@ -2,18 +2,23 @@ import Helpers from '../Helpers';
 import Interval from '../Interval';
 import Pitch from '../Pitch';
 import {DIATONICS_PER_OCTAVE, SEMITONES_PER_OCTAVE} from '../constants';
-import {MIDI_SERIAL_SONORITY_MAP, SONORITY_INTERVALS} from './definitions';
+import {
+    ACADEMIC_SONORITY_ALIASES_FULL,
+    ACADEMIC_SONORITY_ALIASES_SHORT,
+    INTEGER_NOTATION_SERIAL_SONORITY_MAP,
+    SONORITY_INTERVALS,
+} from './definitions';
 
 type RootSonority = {
     sonority?: string;
     semitones?: number;
 };
 
-export default class MidiChord {
-    private _midiNums: number[] = [];
+export default class IntegerChord {
+    private _integerNotation: number[] = [];
 
-    constructor(midiNums?: number[]) {
-        this._midiNums = midiNums || [];
+    constructor(integerNotation?: number[]) {
+        this._integerNotation = integerNotation || [];
     }
 
     /**
@@ -21,18 +26,18 @@ export default class MidiChord {
      * built from a given root
      */
     private _getSonorityForRootSemitones(root: number): string {
-        const uniqueSimpleMidi: Set<number> = new Set();
+        const uniqueSimpleIntegers: Set<number> = new Set();
 
-        const rootRelativeMidi: number[] = [];
+        const rootRelativeIntegers: number[] = [];
 
-        this._midiNums.forEach(m => {
-            const simpleMidi = Helpers.simplifySemitones(m);
+        this._integerNotation.forEach(m => {
+            const simpleInteger = Helpers.simplifySemitones(m);
 
-            if (uniqueSimpleMidi.has(simpleMidi)) {
+            if (uniqueSimpleIntegers.has(simpleInteger)) {
                 return;
             }
 
-            uniqueSimpleMidi.add(simpleMidi);
+            uniqueSimpleIntegers.add(simpleInteger);
 
             let current = m - root;
 
@@ -40,13 +45,13 @@ export default class MidiChord {
                 current += SEMITONES_PER_OCTAVE;
             }
 
-            rootRelativeMidi.push(Helpers.simplifySemitones(current));
+            rootRelativeIntegers.push(Helpers.simplifySemitones(current));
         });
 
-        const sortedRootRelativeMidi = rootRelativeMidi.sort((a, b) => a - b);
-        const serialized = sortedRootRelativeMidi.join(',');
+        const sortedRootRelativeIntegers = rootRelativeIntegers.sort((a, b) => a - b);
+        const serialized = sortedRootRelativeIntegers.join(',');
 
-        return MIDI_SERIAL_SONORITY_MAP[serialized] || '';
+        return INTEGER_NOTATION_SERIAL_SONORITY_MAP[serialized] || '';
     }
 
     /**
@@ -56,10 +61,10 @@ export default class MidiChord {
      * This is the main parsing algorithm
      */
     private getSemitonesAndSonority(): RootSonority {
-        for (let i = 0; i < this._midiNums.length; i++) {
+        for (let i = 0; i < this._integerNotation.length; i++) {
             // We're going to try each note as a potential root
             // as the chord can be inverted
-            const semitones = this._midiNums[i];
+            const semitones = this._integerNotation[i];
             const sonority = this._getSonorityForRootSemitones(semitones);
 
             if (sonority) {
@@ -83,7 +88,15 @@ export default class MidiChord {
     }
 
     setMidi(midiNums: number[]): void {
-        this._midiNums = midiNums;
+        this._integerNotation = midiNums;
+    }
+
+    academicSonority(): string {
+        return ACADEMIC_SONORITY_ALIASES_FULL[this.sonority()] || '';
+    }
+
+    academicShortSonority(): string {
+        return ACADEMIC_SONORITY_ALIASES_SHORT[this.sonority()] || '';
     }
 
     sonority(): string {
@@ -116,8 +129,9 @@ export default class MidiChord {
         const parsedPitches: Pitch[] = [];
         const parsedIntervals: Interval[] = [];
 
-        this._midiNums.forEach(m => {
+        this._integerNotation.forEach(m => {
             if (m === semitones) {
+                parsedIntervals.push(new Interval('P1'));
                 parsedPitches.push(rootPitch);
                 return;
             }

@@ -1,7 +1,11 @@
 import Interval from '../Interval';
 import Pitch from '../Pitch';
 import {PitchCoordinate} from '../types';
-import {SERIAL_SONORITY_MAP} from './definitions';
+import {
+    ACADEMIC_SONORITY_ALIASES_FULL,
+    ACADEMIC_SONORITY_ALIASES_SHORT,
+    SERIAL_SONORITY_MAP,
+} from './definitions';
 
 export default class Chord {
     private _pitches: Pitch[];
@@ -16,10 +20,7 @@ export default class Chord {
 
     name(): string {
         const root = this.root();
-        const rootName = `${root.letter()}${root.accidental()}`;
-        const sonority = this.sonority();
-
-        return `${rootName}${sonority}`;
+        return `${root.letter()}${root.accidental()}${this.academicShortSonority()}`;
     }
 
     pitches(): Pitch[] {
@@ -41,6 +42,14 @@ export default class Chord {
         });
 
         return intervals.join(',');
+    }
+
+    academicSonority(): string {
+        return ACADEMIC_SONORITY_ALIASES_FULL[this.sonority()] || '';
+    }
+
+    academicShortSonority(): string {
+        return ACADEMIC_SONORITY_ALIASES_SHORT[this.sonority()] || '';
     }
 
     sonority(): string {
