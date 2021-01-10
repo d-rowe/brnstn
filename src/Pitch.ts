@@ -23,6 +23,12 @@ export default class Pitch {
         return this;
     }
 
+    fromDiatonic(diatonic: number): Pitch {
+        this._coord = [diatonic, Helpers.diatonicToSemitones(diatonic)];
+
+        return this;
+    }
+
     fromSemitones(semitones: number): Pitch {
         this._coord = this._getCoordFromSemitones(semitones);
 
