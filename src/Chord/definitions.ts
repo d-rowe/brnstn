@@ -28,6 +28,8 @@ export const SONORITIES: StringMap = keyMirror({
     AUGMENTED: null,
 
     // Seventh chords
+    DIMINISHED_SEVENTH: null,
+    HALF_DIMINISHED_SEVENTH: null,
     MINOR_SEVENTH: null,
     MINOR_MAJOR_SEVENTH: null,
     DOMINANT_SEVENTH: null,
@@ -56,6 +58,8 @@ export const SONORITY_INTERVALS: SonorityIntervals = {
     [SONORITIES.AUGMENTED]: ['P1', 'M3', 'A5'],
 
     // Seventh chords
+    [SONORITIES.DIMINISHED_SEVENTH]: ['P1', 'm3', 'd5', 'd7'],
+    [SONORITIES.HALF_DIMINISHED_SEVENTH]: ['P1', 'm3', 'd5', 'm7'],
     [SONORITIES.MINOR_SEVENTH]: ['P1', 'm3', 'P5', 'm7'],
     [SONORITIES.MINOR_MAJOR_SEVENTH]: ['P1', 'm3', 'P5', 'M7'],
     [SONORITIES.DOMINANT_SEVENTH]: ['P1', 'M3', 'P5', 'm7'],
@@ -75,13 +79,13 @@ export const SONORITY_INTERVALS: SonorityIntervals = {
 export const SERIAL_SONORITY_MAP: StringMap = <const>{
     // Triads
     'P1,m3,d5': SONORITIES.DIMINISHED,
-    'P1,m3': SONORITIES.MINOR,
     'P1,m3,P5': SONORITIES.MINOR,
-    'P1,M3': SONORITIES.MAJOR,
     'P1,M3,P5': SONORITIES.MAJOR,
     'P1,M3,A5': SONORITIES.AUGMENTED,
 
     // Seventh chords
+    'P1,m3,d5,d7': SONORITIES.DIMINISHED_SEVENTH,
+    'P1,m3,d5,m7': SONORITIES.HALF_DIMINISHED_SEVENTH,
     'P1,m3,m7': SONORITIES.MINOR_SEVENTH,
     'P1,m3,P5,m7': SONORITIES.MINOR_SEVENTH,
     'P1,m3,M7': SONORITIES.MINOR_MAJOR_SEVENTH,
@@ -118,14 +122,14 @@ export const SERIAL_SONORITY_MAP: StringMap = <const>{
  */
 export const INTEGER_NOTATION_SERIAL_SONORITY_MAP: StringMap = <const>{
     // Triads
-    '0,4': SONORITIES.MAJOR,
     '0,4,7': SONORITIES.MAJOR,
-    '0,3': SONORITIES.MINOR,
     '0,3,7': SONORITIES.MINOR,
     '0,3,6': SONORITIES.DIMINISHED,
     '0,4,8': SONORITIES.AUGMENTED,
 
     // Seventh chords
+    '0,3,6,9': SONORITIES.DIMINISHED_SEVENTH,
+    '0,3,6,10': SONORITIES.DIMINISHED_SEVENTH,
     '0,3,10': SONORITIES.MINOR_SEVENTH,
     '0,3,7,10': SONORITIES.MINOR_SEVENTH,
     '0,3,11': SONORITIES.MINOR_MAJOR_SEVENTH,
@@ -158,6 +162,8 @@ export const ACADEMIC_SONORITY_ALIASES_SHORT: StringMap = <const>{
     [SONORITIES.AUGMENTED]: 'A',
 
     // Seventh chords
+    [SONORITIES.DIMINISHED_SEVENTH]: 'd7',
+    [SONORITIES.HALF_DIMINISHED_SEVENTH]: 'hd7',
     [SONORITIES.MINOR_SEVENTH]: 'm7',
     [SONORITIES.MINOR_MAJOR_SEVENTH]: 'mM7',
     [SONORITIES.DOMINANT_SEVENTH]: '7',
@@ -182,6 +188,8 @@ export const ACADEMIC_SONORITY_ALIASES_FULL: StringMap = <const>{
     [SONORITIES.AUGMENTED]: 'augmented',
 
     // Seventh chords
+    [SONORITIES.DIMINISHED_SEVENTH]: 'diminished seventh',
+    [SONORITIES.HALF_DIMINISHED_SEVENTH]: 'half-diminished seventh',
     [SONORITIES.MINOR_SEVENTH]: 'minor seventh',
     [SONORITIES.MINOR_MAJOR_SEVENTH]: 'minor major seventh',
     [SONORITIES.DOMINANT_SEVENTH]: 'dominant seventh',
