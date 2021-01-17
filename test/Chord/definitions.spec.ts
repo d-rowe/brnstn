@@ -1,6 +1,9 @@
 import {
+    ACADEMIC_SONORITY_ALIASES_FULL,
+    ACADEMIC_SONORITY_ALIASES_SHORT,
     INTEGER_NOTATION_SERIAL_SONORITY_MAP,
     SERIAL_SONORITY_MAP,
+    SONORITIES,
     SONORITY_INTERVALS,
 } from '../../src/Chord/definitions';
 
@@ -9,7 +12,7 @@ type SonorityValueOccurences = {
 };
 
 describe('Chord definitions', () => {
-    it('SONORITY_INTERVALS should have unique values', () => {
+    it('should have unique sonority intervals', () => {
         const valueOccurrences: SonorityValueOccurences = {};
         Object.values(SONORITY_INTERVALS).forEach(valArr => {
             const serializedVal = JSON.stringify(valArr);
@@ -25,6 +28,13 @@ describe('Chord definitions', () => {
 
     it('should have same amount of entries in sonority maps', () => {
         expectSameObjectSizes([INTEGER_NOTATION_SERIAL_SONORITY_MAP, SERIAL_SONORITY_MAP]);
+    });
+
+    it('should have aliases for all sonorites', () => {
+        Object.keys(SONORITIES).forEach(sonority => {
+            expect(ACADEMIC_SONORITY_ALIASES_FULL[sonority]).not.toBe(undefined);
+            expect(ACADEMIC_SONORITY_ALIASES_SHORT[sonority]).not.toBe(undefined);
+        });
     });
 });
 
