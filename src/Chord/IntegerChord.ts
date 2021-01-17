@@ -14,6 +14,11 @@ type RootSonority = {
     semitones?: number;
 };
 
+type PitchAndIntervals = {
+    pitches: Pitch[];
+    intervals: Interval[];
+};
+
 export default class IntegerChord {
     private _integerNotation: number[] = [];
 
@@ -111,7 +116,7 @@ export default class IntegerChord {
         return this.getPitchesAndIntervals().intervals;
     }
 
-    getPitchesAndIntervals(): {pitches: Pitch[]; intervals: Interval[]} {
+    getPitchesAndIntervals(): PitchAndIntervals {
         const {semitones, sonority} = this.getSemitonesAndSonority();
 
         if (!sonority || semitones === undefined) {
