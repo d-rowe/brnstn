@@ -1,4 +1,4 @@
-import {Chord, Pitch} from '../src';
+import {Chord, Pitch} from '../../src';
 
 describe('Chord', () => {
     describe('#serialize', () => {
