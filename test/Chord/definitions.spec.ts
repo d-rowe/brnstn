@@ -1,6 +1,6 @@
 import {
-    ACADEMIC_SONORITY_ALIASES_FULL,
-    ACADEMIC_SONORITY_ALIASES_SHORT,
+    SONORITY_ALIASES_LONG,
+    SONORITY_ALIASES_ACADEMIC,
     INTEGER_NOTATION_SERIAL_SONORITY_MAP,
     SERIAL_SONORITY_MAP,
     SONORITIES,
@@ -32,8 +32,8 @@ describe('Chord definitions', () => {
 
     it('should have aliases for all sonorites', () => {
         Object.keys(SONORITIES).forEach(sonority => {
-            expect(ACADEMIC_SONORITY_ALIASES_FULL[sonority]).not.toBe(undefined);
-            expect(ACADEMIC_SONORITY_ALIASES_SHORT[sonority]).not.toBe(undefined);
+            expect(SONORITY_ALIASES_LONG[sonority]).not.toBe(undefined);
+            expect(SONORITY_ALIASES_ACADEMIC[sonority]).not.toBe(undefined);
         });
     });
 });

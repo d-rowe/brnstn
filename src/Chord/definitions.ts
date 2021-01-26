@@ -154,7 +154,7 @@ export const INTEGER_NOTATION_SERIAL_SONORITY_MAP: StringMap = <const>{
     '0,5,7': SONORITIES.SUSPENDED_FORTH,
 };
 
-export const ACADEMIC_SONORITY_ALIASES_SHORT: StringMap = <const>{
+export const SONORITY_ALIASES_ACADEMIC: StringMap = <const>{
     // Triads
     [SONORITIES.DIMINISHED]: 'd',
     [SONORITIES.MINOR]: 'm',
@@ -180,7 +180,7 @@ export const ACADEMIC_SONORITY_ALIASES_SHORT: StringMap = <const>{
     [SONORITIES.SUSPENDED_FORTH]: 'sus4',
 };
 
-export const ACADEMIC_SONORITY_ALIASES_FULL: StringMap = <const>{
+export const SONORITY_ALIASES_LONG: StringMap = <const>{
     // Triads
     [SONORITIES.DIMINISHED]: 'diminished',
     [SONORITIES.MINOR]: 'minor',

@@ -1,41 +1,30 @@
+import BaseChord from './BaseChord';
 import Helpers from '../Helpers';
 import Interval from '../Interval';
 import Pitch from '../Pitch';
 import {DIATONICS_PER_OCTAVE, SEMITONES_PER_OCTAVE} from '../constants';
-import {
-    ACADEMIC_SONORITY_ALIASES_FULL,
-    ACADEMIC_SONORITY_ALIASES_SHORT,
-    INTEGER_NOTATION_SERIAL_SONORITY_MAP,
-    SONORITY_INTERVALS,
-} from './definitions';
+import {INTEGER_NOTATION_SERIAL_SONORITY_MAP, SONORITY_INTERVALS} from './definitions';
 
-type RootSonority = {
-    sonority?: string;
-    semitones?: number;
-};
-
-type PitchAndIntervals = {
-    pitches: Pitch[];
-    intervals: Interval[];
-};
-
-export default class IntegerChord {
-    private _integerNotation: number[] = [];
+class IntegerChord extends BaseChord {
+    private integerNotation: number[] = [];
+    private rootSemitones: number | undefined;
 
     constructor(integerNotation?: number[]) {
-        this._integerNotation = integerNotation || [];
+        super();
+
+        this.setIntegerNotation(integerNotation);
     }
 
     /**
      * Tries to find a matching sonority definition match
      * built from a given root
      */
-    private _getSonorityForRootSemitones(root: number): string {
+    private getSonorityForRootSemitones(root: number): string {
         const uniqueSimpleIntegers: Set<number> = new Set();
 
         const rootRelativeIntegers: number[] = [];
 
-        this._integerNotation.forEach(m => {
+        this.integerNotation.forEach(m => {
             const simpleInteger = Helpers.simplifySemitones(m);
 
             if (uniqueSimpleIntegers.has(simpleInteger)) {
@@ -65,79 +54,55 @@ export default class IntegerChord {
      *
      * This is the main parsing algorithm
      */
-    private getSemitonesAndSonority(): RootSonority {
-        for (let i = 0; i < this._integerNotation.length; i++) {
+    private setSemitonesAndSonority(): void {
+        for (let i = 0; i < this.integerNotation.length; i++) {
             // We're going to try each note as a potential root
             // as the chord can be inverted
-            const semitones = this._integerNotation[i];
-            const sonority = this._getSonorityForRootSemitones(semitones);
+            const semitones = this.integerNotation[i];
+            const sonority = this.getSonorityForRootSemitones(semitones);
 
             if (sonority) {
-                return {semitones, sonority};
+                this.rootSemitones = semitones;
+                this.sonority = sonority;
+                return;
             }
         }
-
-        return {
-            semitones: undefined,
-            sonority: undefined,
-        };
     }
 
     root(): Pitch {
-        const {semitones} = this.getSemitonesAndSonority();
-        if (!semitones) {
+        if (!this.rootSemitones) {
             return new Pitch();
         }
 
-        return new Pitch().fromSemitones(semitones);
+        return new Pitch().fromSemitones(this.rootSemitones);
     }
 
-    setMidi(midiNums: number[]): void {
-        this._integerNotation = midiNums;
+    setIntegerNotation(midiNums: number[] = []): void {
+        this.integerNotation = midiNums;
+        this.rootSemitones = undefined;
+
+        this.reset();
+        this.setSemitonesAndSonority();
+        this.setPitchesAndIntervals();
     }
 
-    academicSonority(): string {
-        return ACADEMIC_SONORITY_ALIASES_FULL[this.sonority()] || '';
-    }
+    private setPitchesAndIntervals(): void {
+        this.intervals = [];
+        this.pitches = [];
 
-    academicShortSonority(): string {
-        return ACADEMIC_SONORITY_ALIASES_SHORT[this.sonority()] || '';
-    }
-
-    sonority(): string {
-        return this.getSemitonesAndSonority().sonority || '';
-    }
-
-    pitches(): Pitch[] {
-        return this.getPitchesAndIntervals().pitches;
-    }
-
-    intervals(): Interval[] {
-        return this.getPitchesAndIntervals().intervals;
-    }
-
-    getPitchesAndIntervals(): PitchAndIntervals {
-        const {semitones, sonority} = this.getSemitonesAndSonority();
-
-        if (!sonority || semitones === undefined) {
-            return {
-                pitches: [],
-                intervals: [],
-            };
+        if (!this.sonority || this.rootSemitones === undefined) {
+            return;
         }
 
-        const intervalNames = SONORITY_INTERVALS[sonority];
+        const intervalNames = SONORITY_INTERVALS[this.sonority];
         const intervals = intervalNames.map(name => new Interval(name));
-        const rootDiatonic = Helpers.semitonesToNearestDiatonic(semitones);
-        const rootPitch = new Pitch().fromCoord([rootDiatonic, semitones]);
+        const rootDiatonic = Helpers.semitonesToNearestDiatonic(this.rootSemitones);
+        const rootPitch = new Pitch().fromCoord([rootDiatonic, this.rootSemitones]);
 
-        const parsedPitches: Pitch[] = [];
-        const parsedIntervals: Interval[] = [];
-
-        this._integerNotation.forEach(m => {
-            if (m === semitones) {
-                parsedIntervals.push(new Interval('P1'));
-                parsedPitches.push(rootPitch);
+        this.integerNotation.forEach(m => {
+            if (m === this.rootSemitones) {
+                this.intervals.push(new Interval('P1'));
+                this.pitches.push(rootPitch);
                 return;
             }
 
@@ -151,16 +116,13 @@ export default class IntegerChord {
                     const diatonic = Helpers.simplifyDiatonic(refDiatonic) + octaveOffset;
                     const pitch = new Pitch().fromCoord([diatonic, m]);
 
-                    parsedIntervals.push(new Interval().fromPitchRange(rootPitch, pitch));
-                    parsedPitches.push(pitch);
+                    this.intervals.push(new Interval().fromPitchRange(rootPitch, pitch));
+                    this.pitches.push(pitch);
                     return;
                 }
             }
         });
-
-        return {
-            pitches: parsedPitches,
-            intervals: parsedIntervals,
-        };
     }
 }
+
+export default IntegerChord;
