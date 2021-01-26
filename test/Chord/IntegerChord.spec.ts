@@ -1,4 +1,4 @@
-import {IntegerChord} from '../src/Chord';
+import {IntegerChord} from '../../src/Chord';
 
 describe('IntegerChord', () => {
     describe('#root', () => {
