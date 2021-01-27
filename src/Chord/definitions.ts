@@ -46,34 +46,52 @@ export const SONORITIES: StringMap = keyMirror({
     SUSPENDED_FORTH: null,
 });
 
+export const COMMON_INTERVALS = keyMirror({
+    P1: null,
+    M2: null,
+    m3: null,
+    P4: null,
+    M3: null,
+    d5: null,
+    P5: null,
+    A5: null,
+    d7: null,
+    m7: null,
+    M7: null,
+    m9: null,
+    M9: null,
+});
+
+const I = COMMON_INTERVALS;
+
 type SonorityIntervals = {
     [key: string]: string[];
 };
 
 export const SONORITY_INTERVALS: SonorityIntervals = {
     // Triads
-    [SONORITIES.DIMINISHED]: ['P1', 'm3', 'd5'],
-    [SONORITIES.MINOR]: ['P1', 'm3', 'P5'],
-    [SONORITIES.MAJOR]: ['P1', 'M3', 'P5'],
-    [SONORITIES.AUGMENTED]: ['P1', 'M3', 'A5'],
+    [SONORITIES.DIMINISHED]: [I.P1, I.m3, I.d5],
+    [SONORITIES.MINOR]: [I.P1, I.m3, I.P5],
+    [SONORITIES.MAJOR]: [I.P1, I.M3, I.P5],
+    [SONORITIES.AUGMENTED]: [I.P1, I.M3, I.A5],
 
     // Seventh chords
-    [SONORITIES.DIMINISHED_SEVENTH]: ['P1', 'm3', 'd5', 'd7'],
-    [SONORITIES.HALF_DIMINISHED_SEVENTH]: ['P1', 'm3', 'd5', 'm7'],
-    [SONORITIES.MINOR_SEVENTH]: ['P1', 'm3', 'P5', 'm7'],
-    [SONORITIES.MINOR_MAJOR_SEVENTH]: ['P1', 'm3', 'P5', 'M7'],
-    [SONORITIES.DOMINANT_SEVENTH]: ['P1', 'M3', 'P5', 'm7'],
-    [SONORITIES.MAJOR_SEVENTH]: ['P1', 'M3', 'P5', 'M7'],
+    [SONORITIES.DIMINISHED_SEVENTH]: [I.P1, I.m3, I.d5, I.d7],
+    [SONORITIES.HALF_DIMINISHED_SEVENTH]: [I.P1, I.m3, I.d5, I.m7],
+    [SONORITIES.MINOR_SEVENTH]: [I.P1, I.m3, I.P5, I.m7],
+    [SONORITIES.MINOR_MAJOR_SEVENTH]: [I.P1, I.m3, I.P5, I.M7],
+    [SONORITIES.DOMINANT_SEVENTH]: [I.P1, I.M3, I.P5, I.m7],
+    [SONORITIES.MAJOR_SEVENTH]: [I.P1, I.M3, I.P5, I.M7],
 
     // Ninth chords
-    [SONORITIES.MINOR_NINTH]: ['P1', 'm3', 'P5', 'm7', 'm9'],
-    [SONORITIES.DOMINANT_MINOR_NINTH]: ['P1', 'M3', 'P5', 'm7', 'm9'],
-    [SONORITIES.DOMINANT_NINTH]: ['P1', 'M3', 'P5', 'm7', 'M9'],
-    [SONORITIES.MAJOR_NINTH]: ['P1', 'M3', 'P5', 'M7', 'M9'],
+    [SONORITIES.MINOR_NINTH]: [I.P1, I.m3, I.P5, I.m7, I.m9],
+    [SONORITIES.DOMINANT_MINOR_NINTH]: [I.P1, I.M3, I.P5, I.m7, I.m9],
+    [SONORITIES.DOMINANT_NINTH]: [I.P1, I.M3, I.P5, I.m7, I.M9],
+    [SONORITIES.MAJOR_NINTH]: [I.P1, I.M3, I.P5, I.M7, I.M9],
 
     // Suspended chords
-    [SONORITIES.SUSPENDED_SECOND]: ['P1', 'M2', 'P5'],
-    [SONORITIES.SUSPENDED_FORTH]: ['P1', 'P4', 'P5'],
+    [SONORITIES.SUSPENDED_SECOND]: [I.P1, I.M2, I.P5],
+    [SONORITIES.SUSPENDED_FORTH]: [I.P1, I.P4, I.P5],
 };
 
 export const SERIAL_SONORITY_MAP: StringMap = <const>{
