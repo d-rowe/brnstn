@@ -89,7 +89,6 @@ class IntegerChord extends BaseChord {
     private setPitchesAndIntervals(): void {
         this.intervals = [];
         this.pitches = [];
-        this.voicing = [];
 
         if (!this.sonority || this.rootSemitones === undefined) {
             return;
@@ -103,11 +102,9 @@ class IntegerChord extends BaseChord {
 
         for (let i = 0; i < this.integerNotation.length; i++) {
             const m = this.integerNotation[i];
-            const curIntervalName = intervalNames[i];
 
             if (m === this.rootSemitones) {
                 this.intervals.push(new Interval('P1'));
-                this.voicing.push('1');
                 this.pitches.push(rootPitch);
                 continue;
             }
@@ -139,7 +136,6 @@ class IntegerChord extends BaseChord {
                     const pitch = new Pitch().fromCoord([curDiatonic, m]);
 
                     this.intervals.push(new Interval().fromPitchRange(rootPitch, pitch));
-                    this.voicing.push(curIntervalName);
                     this.pitches.push(pitch);
                     continue;
                 }
