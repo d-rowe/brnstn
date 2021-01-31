@@ -20,10 +20,8 @@ describe('IntegerChord', () => {
 
     describe('#pitches', () => {
         it('should return correct pitches', () => {
-            const pitches = new IntegerChord([6, 10, 15]).pitches;
-            const pitchSpns = pitches.map(p => p.spn());
-
-            expect(pitchSpns).toEqual(['F#0', 'A#0', 'D#1']);
+            expectSpns([6, 10, 15], ['F#0', 'A#0', 'D#1']);
+            expectSpns([8, 12, 15], ['G#0', 'B#0', 'D#1']);
         });
     });
 
@@ -36,3 +34,10 @@ describe('IntegerChord', () => {
         });
     });
 });
+
+function expectSpns(semitones: number[], expectedSpns: string[]) {
+    const pitches = new IntegerChord(semitones).pitches;
+    const pitchSpns = pitches.map(p => p.spn());
+
+    expect(pitchSpns).toEqual(expectedSpns);
+}

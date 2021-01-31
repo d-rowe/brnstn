@@ -6,11 +6,13 @@ class BaseChord {
     intervals: Interval[] = [];
     pitches: Pitch[] = [];
     sonority: string = '';
+    voicing: string[] = [];
 
     reset(): void {
         this.intervals = [];
         this.pitches = [];
         this.sonority = '';
+        this.voicing = [];
     }
 
     root(): Pitch {

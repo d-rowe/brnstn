@@ -1,4 +1,4 @@
-import {SCALE_SEMITONES, SEMITONES_PER_OCTAVE} from './constants';
+import {DIATONICS_PER_OCTAVE, SCALE_SEMITONES, SEMITONES_PER_OCTAVE} from './constants';
 import {PitchCoordinate} from './types';
 import Helpers from './Helpers';
 import Pitch from './Pitch';
@@ -101,6 +101,13 @@ export default class Interval {
      */
     direction(): number {
         return this.diatonic() >= 0 ? 1 : -1;
+    }
+
+    invert(): Interval {
+        return new Interval().fromCoord([
+            DIATONICS_PER_OCTAVE - this.simpleDiatonic(),
+            SEMITONES_PER_OCTAVE - this.simpleSemitones(),
+        ]);
     }
 
     /**

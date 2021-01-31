@@ -54,9 +54,9 @@ class IntegerChord extends BaseChord {
      *
      * This is the main parsing algorithm
      */
-    private setSemitonesAndSonority(): void {
+    private setRootSemitonesAndSonority(): void {
         for (let i = 0; i < this.integerNotation.length; i++) {
-            // We're going to try each note as a potential root
+            // we're going to try each note as a potential root
             // as the chord can be inverted
             const semitones = this.integerNotation[i];
             const sonority = this.getSonorityForRootSemitones(semitones);
@@ -82,13 +82,14 @@ class IntegerChord extends BaseChord {
         this.rootSemitones = undefined;
 
         this.reset();
-        this.setSemitonesAndSonority();
+        this.setRootSemitonesAndSonority();
         this.setPitchesAndIntervals();
     }
 
     private setPitchesAndIntervals(): void {
         this.intervals = [];
         this.pitches = [];
+        this.voicing = [];
 
         if (!this.sonority || this.rootSemitones === undefined) {
             return;
@@ -96,32 +97,54 @@ class IntegerChord extends BaseChord {
 
         const intervalNames = SONORITY_INTERVALS[this.sonority];
         const intervals = intervalNames.map(name => new Interval(name));
+        // NOTE: currently root has sharp bias, no accidental minimizing logic
         const rootDiatonic = Helpers.semitonesToNearestDiatonic(this.rootSemitones);
         const rootPitch = new Pitch().fromCoord([rootDiatonic, this.rootSemitones]);
 
-        this.integerNotation.forEach(m => {
+        for (let i = 0; i < this.integerNotation.length; i++) {
+            const m = this.integerNotation[i];
+            const curIntervalName = intervalNames[i];
+
             if (m === this.rootSemitones) {
                 this.intervals.push(new Interval('P1'));
+                this.voicing.push('1');
                 this.pitches.push(rootPitch);
-                return;
+                continue;
             }
 
-            for (let i = 0; i < intervals.length; i++) {
-                const [refIntervalDiatonic, refIntervalSemitones] = intervals[i].coord();
-                const refDiatonic = refIntervalDiatonic + rootPitch.diatonic();
-                const refSemitones = refIntervalSemitones + rootPitch.semitones();
+            for (let j = 0; j < intervals.length; j++) {
+                const curInterval = intervals[j];
+                const [curIntervalDiatonic, curIntervalSemitones] = curInterval.coord();
+                // reference diatonic and semitone values built off of root
+                // NOTE: these are in root position
+                const refDiatonic = curIntervalDiatonic + rootPitch.diatonic();
+                const refSemitones = curIntervalSemitones + rootPitch.semitones();
 
+                // check if current interval matches current pitch in integer notation
                 if (Helpers.simplifySemitones(m) === Helpers.simplifySemitones(refSemitones)) {
-                    const octaveOffset = Helpers.getSemitoneOctave(m) * DIATONICS_PER_OCTAVE;
-                    const diatonic = Helpers.simplifyDiatonic(refDiatonic) + octaveOffset;
-                    const pitch = new Pitch().fromCoord([diatonic, m]);
+                    // we need to transform our reference values to be in correct octave
+                    // this can most likely can be simplified
+                    let curSemitones: number = refSemitones;
+                    let curDiatonic = refDiatonic;
+                    while (curSemitones !== m) {
+                        if (curSemitones > m) {
+                            curSemitones -= SEMITONES_PER_OCTAVE;
+                            curDiatonic -= DIATONICS_PER_OCTAVE;
+                        } else {
+                            curSemitones += SEMITONES_PER_OCTAVE;
+                            curDiatonic += DIATONICS_PER_OCTAVE;
+                        }
+                    }
+
+                    const pitch = new Pitch().fromCoord([curDiatonic, m]);
 
                     this.intervals.push(new Interval().fromPitchRange(rootPitch, pitch));
+                    this.voicing.push(curIntervalName);
                     this.pitches.push(pitch);
-                    return;
+                    continue;
                 }
             }
-        });
+        }
     }
 }
 
