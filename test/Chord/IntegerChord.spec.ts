@@ -18,26 +18,40 @@ describe('IntegerChord', () => {
         });
     });
 
-    describe('#pitches', () => {
-        it('should return correct pitches', () => {
-            expectSpns([6, 10, 15], ['F#0', 'A#0', 'D#1']);
-            expectSpns([8, 12, 15], ['G#0', 'B#0', 'D#1']);
+    describe('#setPitchesAndIntervals', () => {
+        describe('pitches', () => {
+            it('should set correct pitches', () => {
+                expectSpns([6, 10, 15], ['F#0', 'A#0', 'D#1']);
+                expectSpns([8, 12, 15], ['G#0', 'B#0', 'D#1']);
+            });
         });
-    });
 
-    describe('#intervals', () => {
-        it('should return correct intervals while preserving voicing', () => {
-            const chord = new IntegerChord([0, 10, 7, 4, 12, 10, 16]);
-            const intervalNames = chord.intervals.map(i => i.name());
+        describe('intervals', () => {
+            it('should set correct intervals while preserving voicing', () => {
+                const chord = new IntegerChord([0, 10, 7, 4, 12, 10, 16]);
+                const intervalNames = chord.intervals.map(i => i.name());
 
-            expect(intervalNames).toEqual(['P1', 'm7', 'P5', 'M3', 'P8', 'm7', 'M10']);
+                expect(intervalNames).toEqual(['P1', 'm7', 'P5', 'M3', 'P8', 'm7', 'M10']);
+            });
+        });
+
+        describe('voicing', () => {
+            it('should return correct voicings', () => {
+                expectVoicing([0, 4, 7], ['P1', 'M3', 'P5']);
+                expectVoicing([4, 7, 0], ['M3', 'P5', 'P1']);
+                expectVoicing([7, 11, 12, 16], ['P5', 'M7', 'P1', 'M3']);
+            });
         });
     });
 });
 
-function expectSpns(semitones: number[], expectedSpns: string[]) {
+function expectSpns(semitones: number[], expectedSpns: string[]): void {
     const pitches = new IntegerChord(semitones).pitches;
     const pitchSpns = pitches.map(p => p.spn());
 
     expect(pitchSpns).toEqual(expectedSpns);
+}
+
+function expectVoicing(semitones: number[], expectedVoicing: string[]): void {
+    expect(new IntegerChord(semitones).voicing.voicing()).toEqual(expectedVoicing);
 }

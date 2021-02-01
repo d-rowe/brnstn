@@ -1,18 +1,19 @@
 import Pitch from '../Pitch';
 import Interval from '../Interval';
 import {SONORITY_ALIASES_LONG, SONORITY_ALIASES_ACADEMIC} from './definitions';
+import Voicing from '../Voicing';
 
 class BaseChord {
     intervals: Interval[] = [];
     pitches: Pitch[] = [];
     sonority: string = '';
-    voicing: string[] = [];
+    voicing: Voicing = new Voicing();
 
     reset(): void {
         this.intervals = [];
         this.pitches = [];
         this.sonority = '';
-        this.voicing = [];
+        this.voicing.clearIntervals();
     }
 
     root(): Pitch {

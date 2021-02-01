@@ -3,7 +3,11 @@ import Helpers from '../Helpers';
 import Interval from '../Interval';
 import Pitch from '../Pitch';
 import {DIATONICS_PER_OCTAVE, SEMITONES_PER_OCTAVE} from '../constants';
-import {INTEGER_NOTATION_SERIAL_SONORITY_MAP, SONORITY_INTERVALS} from './definitions';
+import {
+    COMMON_INTERVALS,
+    INTEGER_NOTATION_SERIAL_SONORITY_MAP,
+    SONORITY_INTERVALS,
+} from './definitions';
 
 class IntegerChord extends BaseChord {
     private integerNotation: number[] = [];
@@ -89,6 +93,7 @@ class IntegerChord extends BaseChord {
     private setPitchesAndIntervals(): void {
         this.intervals = [];
         this.pitches = [];
+        this.voicing.clearIntervals();
 
         if (!this.sonority || this.rootSemitones === undefined) {
             return;
@@ -104,7 +109,9 @@ class IntegerChord extends BaseChord {
             const m = this.integerNotation[i];
 
             if (m === this.rootSemitones) {
-                this.intervals.push(new Interval('P1'));
+                const interval = new Interval(COMMON_INTERVALS.P1);
+                this.intervals.push(interval);
+                this.voicing.appendInterval(interval);
                 this.pitches.push(rootPitch);
                 continue;
             }
@@ -137,6 +144,7 @@ class IntegerChord extends BaseChord {
 
                     this.intervals.push(new Interval().fromPitchRange(rootPitch, pitch));
                     this.pitches.push(pitch);
+                    this.voicing.appendInterval(curInterval);
                     continue;
                 }
             }
