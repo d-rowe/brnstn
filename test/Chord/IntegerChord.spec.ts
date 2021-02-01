@@ -53,5 +53,5 @@ function expectSpns(semitones: number[], expectedSpns: string[]): void {
 }
 
 function expectVoicing(semitones: number[], expectedVoicing: string[]): void {
-    expect(new IntegerChord(semitones).voicing.voicing()).toEqual(expectedVoicing);
+    expect(new IntegerChord(semitones).voicing.full).toEqual(expectedVoicing);
 }

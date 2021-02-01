@@ -12,13 +12,17 @@ describe('Voicing', () => {
             const intervals = intervalNames.map(n => new Interval(n));
             expect(new Voicing(intervals).intervals).toEqual(intervals);
         });
-    });
 
-    describe('#voicing', () => {
-        it('should return correct voicing', () => {
+        it('should set correct full voicing', () => {
             const intervalNames = ['P1', 'M3'];
             const intervals = intervalNames.map(n => new Interval(n));
-            expect(new Voicing(intervals).voicing()).toEqual(intervalNames);
+            expect(new Voicing(intervals).full).toEqual(intervalNames);
+        });
+
+        it('should set correct simple voicing', () => {
+            const intervalNames = ['P1', 'M3'];
+            const intervals = intervalNames.map(n => new Interval(n));
+            expect(new Voicing(intervals).simple).toEqual(['1', '3']);
         });
     });
 });
