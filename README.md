@@ -1,3 +1,3 @@
 # brnstn
 
-brnstn is a TypeScript music theory library. It aims to make music theory programming fast and delightful.
+brnstn is a TypeScript music theory library. It aims to make music theory programming delightful.
